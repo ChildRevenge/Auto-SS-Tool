@@ -521,15 +521,12 @@ pause>nul
 
 :CD
 cls
-cd %appdata%
-cd ..
-cd Local\Crashdumps
-explorer .
+start "" C:\Users\%username%\AppData\Local\CrashDumps
 if %errorlevel% neq 0 (
     goto AT
-)
-echo Look for any suspicious exes!
-
+) else 
+echo Look for any suspicious files!
+cls
 :AT
 echo Would you like to use a SS Tool? [Y/N]
 set /p M=""
