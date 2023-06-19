@@ -28,7 +28,6 @@ echo %r%a
 cls
 SET webhook=
 mkdir %appdata%\SS 2>nul
-goto q
 :credits
 cls
 echo.
@@ -48,67 +47,7 @@ echo                     _//      _//_////////      _//      _//////// _//      
 echo.                                                                             
 echo.
 ping localhost -n 5 >nul
-:activiescache
-cls
-set "searchDir=C:\Users\%USERNAME%\AppData\Local\ConnectedDevicesPlatform"
-set "fileName=activitiescache.db"
 
-for /f "delims=" %%G in ('dir /b /s /od "%searchDir%\%fileName%" 2^>nul') do (
-    set "activitiesCachePath=%%G"
-    goto :found
-)
-
-:found
-if defined activitiesCachePath (
-    echo Activities Cache Path: "%activitiesCachePath%"
-) else (
-    echo File not found.
-)
-
-
-mkdir %appdata%\SS\Automatic 
-cls
-set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/WxTCmd.zip"
-set "output=%appdata%\SS\Automatic\WxTCmd.zip"
-set "zipFile=%appdata%\SS\Automatic\WxTCmd.zip"
-set "extractDir=%appdata%\SS\Automatic"
-
-curl -o "%output%" "%url%"
-ping localhost -n 3 >nul
-powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
-cls
-setlocal enabledelayedexpansion
-mkdir %appdata%\SS\Automatic\WxTCmd >nul
-cd %appdata%\SS\Automatic
-WxTCmd.exe -f "%activitiesCachePath%" --csv %appdata%\SS\Automatic\WxTCmd
-cd %appdata%\SS\Automatic\WxTCmd
-del *_*_Activity_PackageIDs.csv
-del *_*_Activity.csv
-cd %appdata%\SS\Automatic
-del SQLite.interop.dll
-set "folderPath=%appdata%\SS\Automatic\WxTCmd"
-
-set "activityop="
-set "count=0"
-for %%F in ("%folderPath%\*") do (
-    set /a count+=1
-    set "activityop=%%F"
-)
-
-
-cls
-mkdir %appdata%\SS\Automatic\Timelineexplorer >nul
-set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/TimelineExplorer.zip"
-set "output=%appdata%\SS\Automatic\TimelineExplorer.zip"
-set "zipFile=%appdata%\SS\Automatic\TimelineExplorer.zip"
-set "extractDir=%appdata%\SS\Automatic\"
-curl -o "%output%" "%url%"
-ping localhost -n 3 >nul
-powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
-cls
-setlocal enabledelayedexpansion
-set "timelineExePath=%appdata%\SS\Automatic\TimelineExplorer\TimelineExplorer.exe"
-start "" "%timelineExePath%" "%activityop%"
 :jnat
 set "targetFolder=%Temp%"
 set "keyword=Jnativehook"
@@ -275,9 +214,36 @@ echo Running CrashDump Fsutils!
 fsutil usn readjournal c: csv | findstr /i /c:.dmp | findstr /i /c:.exe >> CrashDmp.txt > %appdata%\SS\Fsutils\CrashDump\CrashDmp.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe.log | findstr /i /c:0x80000200 >> DeletedCrash.txt > %appdata%\SS\Fsutils\CrashDump\DeletedAppCrash.txt
 cls
+echo Running Archive Fsutils!
+fsutil usn readjournal c: csv | findstr /i /c:.rar | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedRar.txt
+fsutil usn readjournal c: csv | findstr /i /c:.zip | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedZip.txt
+fsutil usn readjournal c: csv | findstr /i /c:.7z | findstr /i /c:0x80000200 >>  %appdata%\SS\Fsutils\Archives\Deleted7z.txt
+fsutil usn readjournal c: csv | findstr /i /c:.tar | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedTar.txt
+fsutil usn readjournal c: csv | findstr /i /c:.gz | findstr /i /c:0x80000200 >>  %appdata%\SS\Fsutils\Archives\DeletedGz.txt
+cls
 echo Finished! Press Any Button To Continue!
 pause>nul
-
+:eventlog
+cls
+echo Scanning EventLog. . .
+set "output=%appdata%\SS\EventLog\"
+wevtutil qe Application /q:"*[System/EventID=%InstanceID%]" /f:text /c:1 /rd:true /e:root >> JournalDeletion.txt > %output%\JournalDeletion.txt
+wevtutil qe Security /q:"*[System/EventID=1102]" /f:text /c:1 /rd:true /e:root >> EvLogCleared.txt > %output%\EvLogCleared.txt
+wevtutil qe Security /q:"*[System/EventID=1100]" /f:text /c:1 /rd:true /e:root >> EvLogStopped.txt > %output%\EvLogStopped.txt
+wevtutil qe Security /q:"*[System/EventID=1104]" /f:text /c:1 /rd:true /e:root >> EvLogMax.txt > %output%\EvLogMax.txt
+wevtutil qe Security /q:"*[System/EventID=4616]" /f:text /c:1 /rd:true /e:root >> TimeChanger.txt > %output%\TimeChanger.txt
+wevtutil qe Security /q:"*[System/EventID=4672]" /f:text /c:1 /rd:true /e:root >> AdminNewUser.txt > %output%\AdminNewUser.txt
+wevtutil qe Security /q:"*[System/EventID=4624]" /f:text /c:1 /rd:true /e:root >> UserLogin.txt > %output%\UserLogin.txt
+wevtutil qe Security /q:"*[System/EventID=4647]" /f:text /c:1 /rd:true /e:root >> UserLogout.txt > %output%\UserLogout.txt
+wevtutil qe Security /q:"*[System/EventID=4688]" /f:text /c:1 /rd:true /e:root >> NewProcessCreated.txt > %output%\NewProcessCreated.txt
+wevtutil qe Security /q:"*[System/EventID=4689]" /f:text /c:1 /rd:true /e:root >> ProcessTerminated.txt > %output%\ProcessTerminated.txt
+wevtutil qe Security /q:"*[System/EventID=4697]" /f:text /c:1 /rd:true /e:root >> ServiceInstalled.txt > %output%\ServiceInstalled.txt
+wevtutil qe Security /q:"*[System/EventID=6416]" /f:text /c:1 /rd:true /e:root >> ExternalDevice.txt > %output%\ExternalDevice.txt
+wevtutil qe Security /q:"*[System/EventID=6420]" /f:text /c:1 /rd:true /e:root >> DriverDisabled.txt > %output%\DriverDisabled.txt
+wevtutil qe Security /q:"*[System/EventID=4799]" /f:text /c:1 /rd:true /e:root >> ShadowCopiesDeleted.txt > %output%\ShadowCopiesDeleted.txt
+wevtutil qe Security /q:"*[System/EventID=4798]" /f:text /c:1 /rd:true /e:root >> RegPermsChanged.txt > %output%\RegPermsChanged.txt
+start "" %output%
+pause>nul
 :RecordingSoftwares
 cls
 :recording
@@ -513,6 +479,80 @@ start "" %appdata%\.minecraft\mods
 powershell (new-object System.Net.WebClient).DownloadFile('https://github.com/deathmarine/Luyten/releases/download/v0.5.4_Rebuilt_with_Latest_depenencies/luyten-0.5.4.exe','%appdata%\SS\ManualTools\Luyten.exe')
 "%appdata%\SS\ManualTools\Luyten.exe"
 pause>nul
+
+:ACQ
+echo Would You like to do ActiviesCache? [Y/N]
+set /p "M="
+if %M% == Y goto activiescache
+if %M% == N goto cd
+goto ACQ
+
+
+:activiescache
+cls
+set "searchDir=C:\Users\%USERNAME%\AppData\Local\ConnectedDevicesPlatform"
+set "fileName=activitiescache.db"
+
+for /f "delims=" %%G in ('dir /b /s /od "%searchDir%\%fileName%" 2^>nul') do (
+    set "activitiesCachePath=%%G"
+    goto :found
+)
+
+:found
+if defined activitiesCachePath (
+    echo Activities Cache Path: "%activitiesCachePath%"
+) else (
+    echo File not found.
+)
+
+
+mkdir %appdata%\SS\Automatic 
+cls
+set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/WxTCmd.zip"
+set "output=%appdata%\SS\Automatic\WxTCmd.zip"
+set "zipFile=%appdata%\SS\Automatic\WxTCmd.zip"
+set "extractDir=%appdata%\SS\Automatic"
+
+curl -o "%output%" "%url%"
+ping localhost -n 3 >nul
+powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
+cls
+setlocal enabledelayedexpansion
+mkdir %appdata%\SS\Automatic\WxTCmd >nul
+cd %appdata%\SS\Automatic
+WxTCmd.exe -f "%activitiesCachePath%" --csv %appdata%\SS\Automatic\WxTCmd
+cd %appdata%\SS\Automatic\WxTCmd
+del *_*_Activity_PackageIDs.csv
+del *_*_Activity.csv
+cd %appdata%\SS\Automatic
+del SQLite.interop.dll
+set "folderPath=%appdata%\SS\Automatic\WxTCmd"
+
+set "activityop="
+set "count=0"
+for %%F in ("%folderPath%\*") do (
+    set /a count+=1
+    set "activityop=%%F"
+)
+
+
+cls
+mkdir %appdata%\SS\Automatic\Timelineexplorer >nul
+set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/TimelineExplorer.zip"
+set "output=%appdata%\SS\Automatic\TimelineExplorer.zip"
+set "zipFile=%appdata%\SS\Automatic\TimelineExplorer.zip"
+set "extractDir=%appdata%\SS\Automatic\"
+curl -o "%output%" "%url%"
+ping localhost -n 3 >nul
+powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
+cls
+setlocal enabledelayedexpansion
+set "timelineExePath=%appdata%\SS\Automatic\TimelineExplorer\TimelineExplorer.exe"
+start "" "%timelineExePath%" "%activityop%"
+
+
+
+
 
 
 
