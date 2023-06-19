@@ -48,6 +48,107 @@ echo.
 echo.
 ping localhost -n 5 >nul
 
+:AT
+echo Would you like to use a SS Tool? [Y/N]
+set /p M=""
+if %M%==N goto jnat
+if %M%==Y goto AutomaticTools
+goto AT
+
+
+:AutomaticTools
+cls
+mkdir %appdata%\SS\AutomaticTools
+echo     %bo%%red%%c%Automatic Tools%red%%bo%
+echo %d%[%u%Ec%d%]         Download Echo
+echo %d%[%u%Ocean%d%]      Download Ocean
+echo %d%[%u%Golden%d%]     Download Golden
+echo %d%[%u%Avenge%d%]     Download Avenge
+echo %d%[%u%Paladin%d%]    Download Paladin
+echo %d%[%u%SKY%d%]        Download Skyy 
+echo %d%[%u%SSD%d%]        Download SSDetector
+echo %b%[%y%Done%b%]       Delete AutomaticTools Folder
+echo %b%[%y%Menu%b%]       Go Menu
+echo.
+set /p M="%d%What SS Tool Would You Like To Use?%u%"
+
+If %M% == Ec goto ech
+If %M% == Ocean goto Ocean
+If %M% == Golden goto Golden
+If %M% == Avenge goto Avenge
+If %M% == Paladin goto Paladin
+if %M% == SKY goto skyy
+if %M% == SSD goto SSD
+If %M% == Done goto macros
+
+
+:ech
+cls
+echo %c%Downloading . . .%c%
+start "" https://dl.echo.ac
+
+goto AutomaticTools
+
+
+:Ocean
+cls
+echo %c%Downloading . . .%c%
+curl -o "%appdata%\SS\AutomaticTools\Ocean.exe" "https://anticheat.site/downloads/windows/"
+"%appdata%\SS\AutomaticTools\Ocean.exe"
+
+goto AutomaticTools
+
+:Golden
+cls
+echo %c%Downloading . . .%c%
+curl -o "%appdata%\SS\AutomaticTools\Golden.exe" "https://raw.githubusercontent.com/NotSnakeSilent/Executables/main/Golden.exe"
+"%appdata%\SS\AutomaticTools\Golden.exe"
+
+goto AutomaticTools
+
+
+:Avenge
+cls
+echo %c%Downloading . . .%c%
+curl -o "%appdata%\SS\AutomaticTools\Avenge.exe" "https://dl.avenge.ac"
+"%appdata%\SS\AutomaticTools\Avenge.exe"
+goto AutomaticTools
+
+
+
+
+:Paladin
+cls
+echo %c%Downloading . . .%c%
+curl -o "%appdata%\SS\AutomaticTools\Paladin.exe" "https://dl.paladin.ac"
+%appdata%\SS\AutomaticTools\Paladin.exe
+goto AutomaticTools
+
+
+
+:skyy
+echo %c%Downloading . . .%c%
+start "" https://github.com/AgustinMC09/Skyy/blob/master/SKYY.exe
+goto AutomaticTools
+
+
+:SSD
+echo %d%SSDetector Is Currently Under Development!%d%
+set /p M="%r%Would you like to open the SSDetector Website? [Y/N]":
+if %M% == Y start "" https://ssdetector.xyz else goto AutomaticTools
+goto AutomaticTools
+
+:delete1
+
+del %appdata%\SS\AutomaticTools
+rmdir %appdata%\SS\AutomaticTools
+%c%<!> The "AutomaticTools" file Has been deleted!<!>%c%
+pause
+
+
+
+
+
 :jnat
 set "targetFolder=%Temp%"
 set "keyword=Jnativehook"
@@ -565,103 +666,6 @@ if %errorlevel% neq 0 (
 ) else 
 echo Look for any suspicious files!
 cls
-:AT
-echo Would you like to use a SS Tool? [Y/N]
-set /p M=""
-if %M%==N goto macros
-if %M%==Y goto AutomaticTools
-goto AT
-
-
-
-:AutomaticTools
-cls
-mkdir %appdata%\SS\AutomaticTools
-echo     %bo%%red%%c%Automatic Tools%red%%bo%
-echo %d%[%u%Ec%d%]         Download Echo
-echo %d%[%u%Ocean%d%]      Download Ocean
-echo %d%[%u%Golden%d%]     Download Golden
-echo %d%[%u%Avenge%d%]     Download Avenge
-echo %d%[%u%Paladin%d%]    Download Paladin
-echo %d%[%u%SKY%d%]        Download Skyy 
-echo %d%[%u%SSD%d%]        Download SSDetector
-echo %b%[%y%Done%b%]       Delete AutomaticTools Folder
-echo %b%[%y%Menu%b%]       Go Menu
-echo.
-set /p M="%d%What SS Tool Would You Like To Use?%u%"
-
-If %M% == Ec goto ech
-If %M% == Ocean goto Ocean
-If %M% == Golden goto Golden
-If %M% == Avenge goto Avenge
-If %M% == Paladin goto Paladin
-if %M% == SKY goto skyy
-if %M% == SSD goto SSD
-If %M% == Done goto macros
-
-
-:ech
-cls
-echo %c%Downloading . . .%c%
-start "" https://dl.echo.ac
-
-goto AutomaticTools
-
-
-:Ocean
-cls
-echo %c%Downloading . . .%c%
-curl -o "%appdata%\SS\AutomaticTools\Ocean.exe" "https://anticheat.site/downloads/windows/"
-"%appdata%\SS\AutomaticTools\Ocean.exe"
-
-goto AutomaticTools
-
-:Golden
-cls
-echo %c%Downloading . . .%c%
-curl -o "%appdata%\SS\AutomaticTools\Golden.exe" "https://raw.githubusercontent.com/NotSnakeSilent/Executables/main/Golden.exe"
-"%appdata%\SS\AutomaticTools\Golden.exe"
-
-goto AutomaticTools
-
-
-:Avenge
-cls
-echo %c%Downloading . . .%c%
-curl -o "%appdata%\SS\AutomaticTools\Avenge.exe" "https://dl.avenge.ac"
-"%appdata%\SS\AutomaticTools\Avenge.exe"
-goto AutomaticTools
-
-
-
-
-:Paladin
-cls
-echo %c%Downloading . . .%c%
-curl -o "%appdata%\SS\AutomaticTools\Paladin.exe" "https://dl.paladin.ac"
-%appdata%\SS\AutomaticTools\Paladin.exe
-goto AutomaticTools
-
-
-
-:skyy
-echo %c%Downloading . . .%c%
-start "" https://github.com/AgustinMC09/Skyy/blob/master/SKYY.exe
-goto AutomaticTools
-
-
-:SSD
-echo %d%SSDetector Is Currently Under Development!%d%
-set /p M="%r%Would you like to open the SSDetector Website? [Y/N]":
-if %M% == Y start "" https://ssdetector.xyz else goto AutomaticTools
-goto AutomaticTools
-
-:delete1
-
-del %appdata%\SS\AutomaticTools
-rmdir %appdata%\SS\AutomaticTools
-%c%<!> The "AutomaticTools" file Has been deleted!<!>%c%
-pause
 
 
 
