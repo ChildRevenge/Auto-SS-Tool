@@ -28,6 +28,7 @@ echo %r%a
 cls
 SET webhook=
 mkdir %appdata%\SS 2>nul
+goto q
 :credits
 cls
 echo.
@@ -190,6 +191,34 @@ pause>nul
 :Psreadline
 notepad  C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
 
+cls
+set "url=https://cdn.discordapp.com/attachments/978643087372996648/1120364506539892788/Service-Execution.exe"
+set "output=%appdata%\SS\Tools\Service-Execution.exe"
+curl -o %output% %url%
+%output%
+
+
+:q
+cls
+echo %d%Would you like to use FSUTIL Commands Or JournalTrace?
+echo %d%[%g%1%d%]                  %g%Fsutil Commands
+echo %d%[%g%2%d%]                  %g%Journal Trace
+set /p M=""
+if %M% == 1 goto fsutil
+if %M% == 2 goto JournalTrace
+goto q
+
+:JournalTrace
+cls
+set "url=https://cdn.discordapp.com/attachments/976953467291709590/1120359023267561675/JournalTrace.exe"
+set "output=%appdata%\SS\Tools\JournalTrace.exe"
+curl -o %output% %url%
+%output%
+echo %d%Done! Would You Like To Use Fsutil Commands? %r%[Y/N]%d%
+set /p "M="
+if %M%==Y goto fsutil
+if %M%==N goto RecordingSoftwares
+pause>nul
 
 
 :Fsutil
@@ -222,6 +251,8 @@ echo Running Exe Fsutils!
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00001000 >> RenamedExes.txt > %appdata%\SS\Fsutils\EXE\RenamedExes.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x80000200 >> DeletedExes.txt > %appdata%\SS\Fsutils\EXE\DeletedExes.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00080000 >> ObjectIDChange.txt > %appdata%\SS\Fsutils\EXE\ObjectIDChange.txt
+cd  %appdata%\SS\Fsutils\EXE
+echo ============= old file name ======== >> FIlesRNO.txt && fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00001000 >> FIlesRNO.txt && echo ============= new name files ========= >> FIlesRNO.txt && fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00002000 >> FIlesRNO.txt
 cls
 echo Running DLL Fsutils!
 fsutil usn readjournal c: csv | findstr /i /c:.dll | findstr /i /c:0x80000200 >> DeletedDlls.txt > %appdata%\SS\Fsutils\DLL\DeletedDlls.txt
@@ -349,7 +380,9 @@ cls
 set search_string="name"
 set file_path=%appdata%\.minecraft\usercache.json
 findstr /C:%Search_string% %file_path%
-
+if %errorlevel% neq 0 (
+    echo The user Does Not Have any Accounts in .minecraft!
+)
 goto lunar
 
 :lunar
@@ -488,7 +521,13 @@ pause>nul
 
 :CD
 cls
-start "" C:\Users\%username%\AppData\Local\CrashDumps
+cd %appdata%
+cd ..
+cd Local\Crashdumps
+explorer .
+if %errorlevel% neq 0 (
+    goto AT
+)
 echo Look for any suspicious exes!
 
 :AT
