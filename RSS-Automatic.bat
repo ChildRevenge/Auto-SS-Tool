@@ -251,8 +251,6 @@ echo Running Exe Fsutils!
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00001000 >> RenamedExes.txt > %appdata%\SS\Fsutils\EXE\RenamedExes.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x80000200 >> DeletedExes.txt > %appdata%\SS\Fsutils\EXE\DeletedExes.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00080000 >> ObjectIDChange.txt > %appdata%\SS\Fsutils\EXE\ObjectIDChange.txt
-cd  %appdata%\SS\Fsutils\EXE
-echo ============= old file name ======== >> FIlesRNO.txt && fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00001000 >> FIlesRNO.txt && echo ============= new name files ========= >> FIlesRNO.txt && fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00002000 >> FIlesRNO.txt
 cls
 echo Running DLL Fsutils!
 fsutil usn readjournal c: csv | findstr /i /c:.dll | findstr /i /c:0x80000200 >> DeletedDlls.txt > %appdata%\SS\Fsutils\DLL\DeletedDlls.txt
