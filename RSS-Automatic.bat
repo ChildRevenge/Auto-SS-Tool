@@ -48,6 +48,7 @@ echo.
 echo.
 ping localhost -n 3 >nul
 cls
+goto AA
 :AT
 echo Would you like to use an Automatic SS Tool? [Y/N]
 set /p M=""
@@ -257,7 +258,7 @@ curl -o %output% %url%
 echo %d%Done! Would You Like To Use Fsutil Commands? %r%[Y/N]%d%
 set /p "M="
 if %M%==Y goto fsutil
-if %M%==N goto RecordingSoftwares
+if %M%==N goto eventlog
 pause>nul
 
 
@@ -508,90 +509,79 @@ if %errorlevel%==1 goto vanilaaccounts
 if %errorlevel%==0 echo %c%IPVanish VPN is running, continue to SS? (Yes, No)
 set /p vpn=
 if /i %vpn%==Yes (goto vanilaaccounts) else (exit)
-
 ::Accounts
-
+:AA
 :vanilaaccounts
 cls
-echo %c%========== Accounts: ==========%d%
+echo %c%========== Accounts: ==========%d% > Alts.txt >> %appdata%\SS\Alts.txt
 set search_string="name"
 set file_path=%appdata%\.minecraft\usercache.json
-findstr /C:%Search_string% %file_path%
-if %errorlevel% neq 0 (
-    echo The user Does Not Have any Accounts in .minecraft!
+if exist %file_path% (
+    findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
+    goto lunar
+) else (
+    goto lunar
 )
-goto lunar
-
 :lunar
 set search_string="username" 
 set file_path=C:\Users\%username%\.lunarclient\settings\game\accounts.json
-findstr /C:%Search_string% %file_path% 2>nul
-if %errorLevel% neq 0 (
-    echo The user does not own Lunar Client!
-)
+if exist %file_path% (
+findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
 goto cosmic
+) else (
+    goto cosmic
+)
+
 :cosmic
 set search_string="displayName"
 set file_path=%appdata%\.minecraft\cosmic\accounts.json
-findstr /C:%search_string% %file_path% 2>nul
-if %errorLevel% neq 0 (
-    echo The user does not own %bo%%d%Cosmic client!%d%%bo%
+if exist %file_path% (
+findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
+goto tll
+) else (
+    goto tll
 )
-  goto tll
 
 :tll
 set search_string="username" 
 set file_path=%appdata%\.tlauncher\legacy\Minecraft\game\tlauncher_profiles.json
-findstr /C:%Search_string% %file_path%
-if %errorLevel% neq 0 (
-    echo The user does not own %bo%%d%TLauncher Legacy!%d%%bo%
-)
+if exist %file_path% (
+findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
 goto tl
+) else (
+    goto tl
+)
 
 
 :tl
 set search_string="displayName"
-set file_path=%appdata%\.minecraft\TlauncherProfiles.json
-findstr /C:%search_string% %file_path% >nul
-if %errorLevel% neq 0 (
-    echo The user does not own %bo%%d%Tlauncher!%d%%bo%
-)
-goto tecknix
-
-:tecknix
-set search_string="username"
-set file_path=%appdata%\.minecraft\Tecknix\Accounts.json
-findstr /C:%search_string% %file_path% 2>nul
-if %errorLevel% neq 0 (
-    echo %u%The user does not own %bo%%d%Tecknix!%d%%bo%
-)
+set file_path2=%appdata%\.minecraft\TlauncherProfiles.json
+if exist %file_path2% (
+findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
 goto orbit
-
+) else (
+    goto orbit
+)
 
 :orbit
 set "folderPath=%appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces"
-cd "" %appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces 2>nul
-if %errorlevel% neq 0 (
-    goto badlion
-)
-if %errorlevel% equ 0 (
+if exist %folderPath% (
     goto orbit2
-)  
-
-goto badlion
+    ) else (
+        goto open
+    )
 :orbit2
+cd "" %appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces 2>nul
  echo %c% Orbit Accounts:%c%
 
 for %%F in ("%folderPath%\*") do (
-    echo %%~nxF
+    echo %%~nxF > Alts.txt >> %appdata%\SS\Alts.txt
 )
 
     
-:badlion
-echo %g%Badlion Client's account data is obfuscated, it cannot be accessed!%g%
-echo %g%Press Any Button To Go Back To The Menu%g%
+:open
+notepad %appdata%\SS\Alts.txt
 pause>nul
-
 
 
 :modfolder
