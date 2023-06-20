@@ -1,6 +1,6 @@
 @echo off
 cls
-set version=1.0
+set version=1.1
 title RSS Tools v%version% (%date%)
 if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
 
@@ -36,20 +36,20 @@ echo.
 echo.
 echo.
 echo.
+echo.    
+echo             %d%        _///////      _//////// _//         _//  _//////// _///       _//    _////      _////////
+echo                     _//    _//    _//        _//       _//   _//         _/ _//   _//   _/    _//   _//      
+echo                     _//    _//    _//         _//     _//    _//         _// _//  _//  _//          _//      
+echo                     _/ _//        _//////      _//   _//     _//////     _//  _// _//  _//          _//////  
+echo                     _//  _//      _//           _// _//      _//         _//   _/ _//  _//   _////  _//      
+echo                     _//    _//    _//            _////       _//         _//    _/ //   _//    _/   _//      
+echo                     _//      _//  _////////       _//        _////////   _//      _//    _/////     _////////
+echo.                                                                                
 echo.
-echo         %g%            _///////    _////////_//         _//_///// ///_///      _//   _////    _////////
-echo                     _//    _//  _//       _//       _// _//       _/ _//   _//  _/    _//  _//      
-echo                     _//    _//  _//        _//     _//  _//       _// _//  _// _//         _//      
-echo                     _/ _//      _//////     _//   _//   _//////   _//  _// _// _//         _//////  
-echo                     _//  _//    _//          _// _//    _//       _//   _/ _// _//   _//// _//      
-echo                     _//    _//  _//           _////     _//       _//    _/ //  _//    _/  _//      
-echo                     _//      _//_////////      _//      _//////// _//      _//   _/////    _////////
-echo.                                                                             
-echo.
-ping localhost -n 5 >nul
-
+ping localhost -n 3 >nul
+cls
 :AT
-echo Would you like to use a SS Tool? [Y/N]
+echo Would you like to use an Automatic SS Tool? [Y/N]
 set /p M=""
 if %M%==N goto jnat
 if %M%==Y goto AutomaticTools
@@ -235,7 +235,7 @@ cls
 set "url=https://cdn.discordapp.com/attachments/978643087372996648/1120364506539892788/Service-Execution.exe"
 set "output=%appdata%\SS\Tools\Service-Execution.exe"
 curl -o %output% %url%
-%output%
+start "" %output%
 
 
 :q
@@ -271,51 +271,120 @@ mkdir %appdata%\SS\Fsutils\PFs 2>nul
 mkdir %appdata%\SS\Fsutils\JAR 2>nul
 mkdir %appdata%\SS\Fsutils\BAT 2>nul
 mkdir %appdata%\SS\Fsutils\CrashDump 2>nul
+mkdir %appdata%\SS\Fsutils\Archives 2>nul
 cls
 echo %d%Running Macro Fsutils!
+echo.
+echo.
+echo Fsutils included:
+echo.
+echo %g%Glorious
+echo corsair
+echo logitech
+echo MacroSwitcher Generic%d%
 fsutil usn readjournal c: csv | findstr /i /c:.mcf | findstr /i /c:0x80000200 >> Glorious.txt > %appdata%\SS\Fsutils\Macros\glorious.txt
 fsutil usn readjournal c: csv | findstr /i /c:.cuecfg | findstr /i /c:0x80000200 >> Corsair.txt > %appdata%\SS\Fsutils\Macros\corsair.txt
 fsutil usn readjournal c: csv | findstr /i /c:.db | findstr /i /c:0x80000200 >> logitech.txt > %appdata%\SS\Fsutils\Macros\logitech.txt
 fsutil usn readjournal c: csv | findstr /i /c:".com" | findstr /i /c:"0x80000200" >> DeletedMacroSwitcher.txt > %appdata%\SS\Fsutils\Macros\Macroswitcher.txt
 cls
+
 echo Running Extras Fsutils!
+echo.
+echo.
+echo Fsutils included:
+echo.
+echo %g%Deleted EventLog
+echo Empty Character
+echo Jnativehook
+echo Data Truncation
+echo Restarted Processes%d%
 fsutil usn readjournal c: csv | findstr /i /c:.evtx | findstr /i /c:0x80000200 >> DeletedEvtx.txt > %appdata%\SS\Fsutils\Extra\DeletedEventLog.txt
 fsutil usn readjournal c: csv | findstr /i /c:"?" >> EmptyC.txt > %appdata%\SS\Fsutils\Extra\EmptyCharacter.txt
 fsutil usn readjournal c: csv | findstr /i /c:"jnativehook" > %appdata%\SS\Fsutils\Extra\JNativeHooks.txt
-fsutil usn readjournal c: csv | findstr /i /c:"0x00002010" >> Folder.txt > %appdata%\SS\Fsutils\Extra\Folder.txt
 fsutil usn readjournal c: csv | findstr /i /c:0x00080000 /c:0x00000005 >> Datatruncation.txt > %appdata%\SS\Fsutils\Extra\DataTruncation.txt
-fsutil usn readjournal c: csv | findstr /i /c:"Data Truncation" | findstr /i /c:.jar  >> DataTruncation.txt > %appdata%\SS\Fsutils\Extra\JarDataTruncation.txt
 fsutil usn readjournal c: csv | findstr /i /C:".pf" | findstr /i /C:"net" /i /C:"net1" >> RestartedProcesses.txt > %appdata%\SS\Fsutils\Extra\RestartedProcesses.txt
 cls
 echo Running Exe Fsutils!
+echo.
+echo.
+echo Fsutils included:
+echo.
+echo %g%Renamed Executables
+echo Deleted Executables
+echo Executeable ObjectIDChange
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00001000 >> RenamedExes.txt > %appdata%\SS\Fsutils\EXE\RenamedExes.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x80000200 >> DeletedExes.txt > %appdata%\SS\Fsutils\EXE\DeletedExes.txt
 fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00080000 >> ObjectIDChange.txt > %appdata%\SS\Fsutils\EXE\ObjectIDChange.txt
 cls
 echo Running DLL Fsutils!
+echo.
+echo.
+echo Fsutils Included:
+echo.
+echo %g%Deleted DLLs
+echo All DLLs%d%
 fsutil usn readjournal c: csv | findstr /i /c:.dll | findstr /i /c:0x80000200 >> DeletedDlls.txt > %appdata%\SS\Fsutils\DLL\DeletedDlls.txt
 fsutil usn readjournal c: csv | findstr /i /c:.dll >> dll.txt > %appdata%\SS\Fsutils\DLL\AllDLL.txt
 cls
 echo Running Jar Fsutils!
+echo.
+echo.
+echo Fsutils Included:
+echo.
+echo %g%Renamed Jars
+echo Deleted Jars
+echo All Jars
+echo Jar DataTruncation%d%
 fsutil usn readjournal c: csv | findstr /i /c:.jar | findstr /i /c:0x00001000 >> RenamedJars.txt > %appdata%\SS\Fsutils\JAR\RenamedJars.txt
 fsutil usn readjournal c: csv | findstr /i /c:.jar | findstr /i /c:0x80000200 >> DeletedJars.txt > %appdata%\SS\Fsutils\JAR\DeletedJars.txt
 fsutil usn readjournal c: csv | findstr /i /c:.jar | findstr /i /c:0x00000020 >> AllJars.txt > %appdata%\SS\Fsutils\JAR\AllJars.txt
+fsutil usn readjournal c: csv | findstr /i /c:"Data Truncation" | findstr /i /c:.jar  >> DataTruncation.txt > %appdata%\SS\Fsutils\JAR\JarDataTruncation.txt
 cls
 echo Running Prefetch Fsutils!
+echo.
+echo.
+echo Fsutils Included:
+echo.
+echo %g%Renamed PFs
+echo Deleted PFs 
+echo General Prefetch%d%
 fsutil usn readjournal c: csv | findstr /i /c:.pf | findstr /i /c:0x00001000 >> RenamedPFs.txt > %appdata%\SS\Fsutils\PFs\RenamedPF.txt
 fsutil usn readjournal c: csv | findstr /i /c:.pf | findstr /i /c:0x80000200 >> DeletedPFs.txt > %appdata%\SS\Fsutils\PFs\DeletedPF.txt
 fsutil usn readjournal c: csv | findstr /i /c:.pf | findstr /i /c:0x00008000 >> Prefetch.txt > %appdata%\SS\Fsutils\PFs\Prefetch.txt
-fsutil usn readjournal c: csv | findstr /I /c:"Prefetch" | findstr /I /c:"0x00002010" | findstr /I /C:"0x00000800" >> Cacls.txt > %appdata%\SS\Fsutils\PFs\Cacls.txt
 cls
 echo Running Bat Fsutils!
+echo.
+echo.
+echo Fsutils Included:
+echo.
+echo %g%Renamed Batch
+echo Deleted Batch%d%
 fsutil usn readjournal c: csv | findstr /i /c:.bat | findstr /i /c:0x00001000 >> RenamedBats.txt > %appdata%\SS\Fsutils\BAT\RenamedBats.txt
 fsutil usn readjournal c: csv | findstr /i /c:.bat | findstr /i /c:0x80000200 >> DeletedBats.txt > %appdata%\SS\Fsutils\BAT\DeletedBats.txt
 cls
 echo Running CrashDump Fsutils!
+echo.
+echo.
+echo Fsutils Included:
+echo.
+echo %g%All CrashDumps
+echo Deleted AppCrash%d%
+echo 2
 fsutil usn readjournal c: csv | findstr /i /c:.dmp | findstr /i /c:.exe >> CrashDmp.txt > %appdata%\SS\Fsutils\CrashDump\CrashDmp.txt
+echo a
 fsutil usn readjournal c: csv | findstr /i /c:.exe.log | findstr /i /c:0x80000200 >> DeletedCrash.txt > %appdata%\SS\Fsutils\CrashDump\DeletedAppCrash.txt
+echo 3
 cls
 echo Running Archive Fsutils!
+echo.
+echo.
+echo Fsutils Included:
+echo.
+echo %g%Deleted Rar
+echo Deleted Zip
+echo Deleted 7z
+echo Deleted Tar
+echo Deleted Gz%d%
 fsutil usn readjournal c: csv | findstr /i /c:.rar | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedRar.txt
 fsutil usn readjournal c: csv | findstr /i /c:.zip | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedZip.txt
 fsutil usn readjournal c: csv | findstr /i /c:.7z | findstr /i /c:0x80000200 >>  %appdata%\SS\Fsutils\Archives\Deleted7z.txt
@@ -325,10 +394,11 @@ cls
 echo Finished! Press Any Button To Continue!
 pause>nul
 :eventlog
+mkdir %appdata%\SS\EventLog 2>nul
 cls
 echo Scanning EventLog. . .
-set "output=%appdata%\SS\EventLog\"
-wevtutil qe Application /q:"*[System/EventID=%InstanceID%]" /f:text /c:1 /rd:true /e:root >> JournalDeletion.txt > %output%\JournalDeletion.txt
+set "output=%appdata%\SS\EventLog"
+wevtutil qe Application /q:"*[System/EventID=3079]" /f:text /c:1 /rd:true /e:root >> JournalDeletion.txt > %output%\JournalDeletion.txt
 wevtutil qe Security /q:"*[System/EventID=1102]" /f:text /c:1 /rd:true /e:root >> EvLogCleared.txt > %output%\EvLogCleared.txt
 wevtutil qe Security /q:"*[System/EventID=1100]" /f:text /c:1 /rd:true /e:root >> EvLogStopped.txt > %output%\EvLogStopped.txt
 wevtutil qe Security /q:"*[System/EventID=1104]" /f:text /c:1 /rd:true /e:root >> EvLogMax.txt > %output%\EvLogMax.txt
@@ -439,9 +509,11 @@ if %errorlevel%==0 echo %c%IPVanish VPN is running, continue to SS? (Yes, No)
 set /p vpn=
 if /i %vpn%==Yes (goto vanilaaccounts) else (exit)
 
+::Accounts
 
 :vanilaaccounts
 cls
+echo %c%========== Accounts: ==========%d%
 set search_string="name"
 set file_path=%appdata%\.minecraft\usercache.json
 findstr /C:%Search_string% %file_path%
@@ -567,9 +639,8 @@ echo.
 :luyten2
 set /p M="%c%Would You Like To Install Luyten And Open Mods Folder?%c%%d%[Y/N]%d%"
 if %M% == Y goto luyten3
-If %M% == N goto CD
+If %M% == N goto ACQ
 goto luyten2
-pause>nul
 
 :luyten3
 cls
@@ -656,80 +727,73 @@ start "" "%timelineExePath%" "%activityop%"
 
 
 
-
-
+:AA
 :CD
 cls
-start "" C:\Users\%username%\AppData\Local\CrashDumps
-if %errorlevel% neq 0 (
-    goto AT
-) else 
+if exist  "C:\Users\%username%\AppData\Local\CrashDumps" (
+    start "C:\Users\%username%\AppData\Local\CrashDumps"
+    goto macros
+) else (
+    goto macros
+)
 echo Look for any suspicious files!
 cls
 
-
-
-
-
-
-
 :macros
+
+
 :ajazz
 cls
-start "" %appdata%\local\BYCOMBO-2\Mac
-if %errorlevel% neq 0 goto asus
-echo %r% Analyze The Modification Date of the .mcf Files!%r%
-echo %b% Press Any Button To Continue!%b%
-pause>nul
-goto asus
+
+if exist "%appdata%\local\BYCOMBO-2\Mac" (
+    start "" "%appdata%\local\BYCOMBO-2\Mac"
+    echo %r% Analyze The Modification Date of the .mcf Files!%r%
+    echo.
+    echo %b% Press Any Button To Continue!%d%
+    pause>nul
+) else (
+    goto asus
+)
 
 
 
 :asus
 cls
-start "" C:\users\%username%\documents\ASUS\ROG\ROG Armoury\common\macro
-if %errorlevel% neq 0 goto corsair
-echo %r% Analyze The Modification Date of the .GMAC Files!%r%
-echo %b% Press Any Button To Continue!%b%
+if exist "C:\users\%username%\documents\ASUS\ROG\ROG Armoury\common\macro" (
+    start "" "C:\users\%username%\documents\ASUS\ROG\ROG Armoury\common\macro"
+    echo %r% Analyze The Modification Date of the .GMAC Files!%r%
+    echo.
+    echo %b% Press Any Button To Continue!%d%
 pause>nul
-goto corsair
-
-
+) else (
+    goto corsair
+)
 
 :corsair
 cls
-start "" %appdata%\corsair\CUE\config.cuecfg
-if %errorlevel% neq 0 goto glorious
-echo %r%Control + f And Search For "Mouse"!%r%
+if exist  "%appdata%\corsair\CUE\config.cuecfg" (
+    start "" "%appdata%\corsair\CUE\config.cuecfg"
+    echo %r%Control + f And Search For "Mouse"!%r%
+echo.
 echo %b% Press Any Button To Continue!%b%
 pause>nul
-goto glorious
-
-:glorious
-start "" %appdata%\BYCOMBO-2\mac
-if %errorlevel% neq 0 goto logitech
-cls
-echo %b% Press Any Button To Continue!%b%
-pause>nul
-goto logitech
-
-:logitech
-cls
-echo %r%To check If Logitech has been modified, Open PH2 and filter "DurationMs"%r%
-echo %b% Press Any Button To Continue!%b%
-pause>nul
-goto razer
-
+) else (
+    goto razer
+)
 
 :razer
-start "" %appdata%\Local\Razer\Synapse\Log\Macros
-if %errorlevel% neq 0 goto tools
-echo %r%Look at the Modification date of the file named "Razer Macros3.txt"%r%
+if exist "%appdata%\Local\Razer\Synapse\Log\Macros" (
+    start "" "%appdata%\Local\Razer\Synapse\Log\Macros"
+    echo %r%Look at the Modification date of the file named "Razer Macros3.txt"%r%
+    echo.
 echo %b% Press Any Button To Continue!%b%
 pause>nul
+) else (
+    goto tools
+)
 
 
-
+pause
 echo %d%.
 :tools
 mkdir %appdata%\SS\Tools
