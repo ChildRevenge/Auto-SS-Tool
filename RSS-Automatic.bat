@@ -229,8 +229,18 @@ powershell -Command "$process = Get-Process | Where-Object {$_.Id -eq %pid%}; if
 ::credit to azik
 pause>nul
 :Psreadline
-notepad  C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
-
+cls
+if exist "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" (
+    echo %r%Opening Powershell History in 3 seconds!%d%
+    ping localhost -n 3 >nul
+    notepad "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+    echo Press Any key to continue!
+    pause>nul
+    goto PCACLIENT
+) else (
+    goto PCACLIENT
+)
+:PCACLIENT
 cls
 set "url=https://cdn.discordapp.com/attachments/978643087372996648/1120364506539892788/Service-Execution.exe"
 set "output=%appdata%\SS\Tools\Service-Execution.exe"
