@@ -48,7 +48,6 @@ echo.
 echo.
 ping localhost -n 3 >nul
 cls
-goto AA
 :AT
 echo Would you like to use an Automatic SS Tool? [Y/N]
 set /p M=""
@@ -510,7 +509,6 @@ if %errorlevel%==0 echo %c%IPVanish VPN is running, continue to SS? (Yes, No)
 set /p vpn=
 if /i %vpn%==Yes (goto vanilaaccounts) else (exit)
 ::Accounts
-:AA
 :vanilaaccounts
 cls
 echo %c%========== Accounts: ==========%d% > Alts.txt >> %appdata%\SS\Alts.txt
