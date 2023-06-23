@@ -24,7 +24,6 @@ set g2=[102m
 set r2=[101m
 set t=[40m
 set bo=[01m
-echo %r%a
 cls
 SET webhook=
 mkdir %appdata%\SS 2>nul
@@ -723,11 +722,6 @@ set "timelineExePath=%appdata%\SS\Automatic\TimelineExplorer\TimelineExplorer.ex
 start "" "%timelineExePath%" "%activityop%"
 
 
-
-
-
-
-:AA
 :CD
 cls
 if exist  "C:\Users\%username%\AppData\Local\CrashDumps" (
@@ -740,58 +734,124 @@ echo Look for any suspicious files!
 cls
 
 :macros
-
-
-:ajazz
 cls
-
-if exist "%appdata%\local\BYCOMBO-2\Mac" (
-    start "" "%appdata%\local\BYCOMBO-2\Mac"
-    echo %r% Analyze The Modification Date of the .mcf Files!%r%
-    echo.
-    echo %b% Press Any Button To Continue!%d%
-    pause>nul
-) else (
-    goto asus
-)
-
-
-
-:asus
-cls
-if exist "C:\users\%username%\documents\ASUS\ROG\ROG Armoury\common\macro" (
-    start "" "C:\users\%username%\documents\ASUS\ROG\ROG Armoury\common\macro"
-    echo %r% Analyze The Modification Date of the .GMAC Files!%r%
-    echo.
-    echo %b% Press Any Button To Continue!%d%
-pause>nul
-) else (
-    goto corsair
-)
-
-:corsair
-cls
-if exist  "%appdata%\corsair\CUE\config.cuecfg" (
-    start "" "%appdata%\corsair\CUE\config.cuecfg"
-    echo %r%Control + f And Search For "Mouse"!%r%
+echo %r%Scan Started!
 echo.
-echo %b% Press Any Button To Continue!%b%
-pause>nul
-) else (
-    goto razer
+echo.
+set "localAppData=%LOCALAPPDATA%"
+set "appData=%APPDATA%"
+set "programFilesX86=%PROGRAMFILES(X86)%"
+set "programFiles=%PROGRAMFILES%"
+set "Logitech=%localAppData%\LGHUB\settings.db"
+set "Glorious=C:\Users\%username%\AppData\Local\BY-COMBO2\mac"
+set "corsair=%appData%\corsair\CUE\config.cuecfg"
+set "bloody=%programFilesX86%\Bloody7\Bloody7\UserLog\Mouse\TLcir_9EFF3FF4\language\Settings\EnvironmentVar.ini"
+set "steel=%appData%\steelseries-engine-3-client\Session Storage\000003.log"
+set "Alienware=%ALLUSERSPROFILE%\Alienware\AlienWare Command Center\fxmetadata\.json"
+set "Motospeed=%programFiles%\Gaming MouseV30\record.ini"
+set "Marsgaming=%programFilesX86%\Gaming Mouse\Config.ini"
+set "Marsgaming2=%localAppData%\BY-8801-GM917-v108\curid.dtc"
+set "Ayax=%programFiles%\AYAX GamingMouse\config.bin"
+set "T2=%localAppData%\BY-COMBO\pro.dtc"
+set "Xenon200=%programFilesX86%\Xenon200\Configs"
+set "Reddragon=%appData%\REDRAGON\GamingMouse\config.ini"
+set "Reddragon2=%appData%\REDRAGON\GamingMouse\macro.ini"
+set "Reddragon3=%appData%\REDRAGON\GamingMouse\Macro"
+set "Blackweb=C:\Blackweb Gaming AP\config"
+if exist "%Logitech%" (
+    for %%A in ("%Logitech%") do (
+        echo %d%Logitech mouse detected, Modified at: %%~tA
+    )
+    
 )
 
-:razer
-if exist "%appdata%\Local\Razer\Synapse\Log\Macros" (
-    start "" "%appdata%\Local\Razer\Synapse\Log\Macros"
-    echo %r%Look at the Modification date of the file named "Razer Macros3.txt"%r%
-    echo.
-echo %b% Press Any Button To Continue!%b%
-pause>nul
-) else (
-    goto tools
+if exist "%Glorious%" (
+    for %%A in ("%Glorious%") do (
+        echo Glorious mouse detected, Modified at: %%~tA
+         )
+    )
+
+if exist "%corsair%" (
+    for %%A in ("%Glorious%") do (
+    echo Corsair mouse detected, Modified at: %%~tA
+     )
+)
+if exist "%bloody%" (
+    for %%A in ("%bloody%") do (
+        echo Bloody mouse detected, Modified at: %%~tA
+    )
 )
 
+if exist "%steel%" (
+    for %%A in ("%bloody%") do (
+        echo SteelSeries mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Alienware%" (
+    for %%A in ("%Alienware%") do (
+        echo Alienware mouse detected, Modified at: %%~tA
+    )
+)
+if exist "%Motospeed%" (
+    for %%A in ("%Motospeed%") do (
+        echo Motospeed mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Marsgaming%" (
+    for %%A in ("%Marsgaming%") do (
+        echo Marsgaming mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Marsgaming2%" (
+    for %%A in ("%Marsgaming2%") do (
+        echo Marsgaming mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Ayax%" (
+ for %%A in ("%Ayax%") do (
+        echo Ayax mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%T2%" (
+ for %%A in ("%T2%") do (
+        echo T2 mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Xenon200%" (
+    for %%A in ("%Xenon200%") do (
+        echo Xenon200 mouse detected, Modified at: %%~tA
+    )
+)
+if exist "%Reddragon%" (
+    for %%A in ("%Reddragon%") do (
+        echo RedDragon mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Reddragon2%" (
+    for %%A in ("%Reddragon2%") do (
+        echo RedDragon mouse detected, Modified at: %%~tA
+    )
+)
+if exist "%Reddragon3%" (
+    for %%A in ("%Reddragon3%") do (
+        echo RedDragon mouse detected, Modified at: %%~tA
+    )
+)
+
+if exist "%Blackweb%" (
+     for %%A in ("%Blackweb%") do (
+        echo Blackweb mouse detected, Modified at: %%~tA
+    )
+)
+echo Scan Finished!
+pause>nul
 
 pause
 echo %d%.
@@ -845,6 +905,41 @@ set "output=%appdata%\SS\Tools\RecentFilesView.exe"
 curl -o "%output%" "%url%"
 start %output%
 pause>nul
+
+
+
+
+::MacroFinder
+:MacroFinder
+cls
+if exist C:\Users\child\OneDrive\Desktop\LGHUB\settings.db (
+    echo Logitech Mouse Found!
+
+set "filePath=C:\Users\child\OneDrive\Desktop\LGHUB\settings.db"
+for %%A in ("%filePath%") do set "lastModified=%%~tA"
+echo Last modified: %lastModified%
+) else (
+    echo a
+)
+pause>nul
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 :end
 cls
 echo.
