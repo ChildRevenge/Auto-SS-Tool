@@ -149,20 +149,17 @@ pause
 
 
 :jnat
-set "targetFolder=%Temp%"
-set "keyword=Jnativehook"
-set "found=false"
-for /r "%targetFolder%" %%F in (*) do (
-    if "%%~nxF"=="%keyword%" (
-        set "found=true"
-        echo Found: %%F
-    )
+set "search_pattern=JNativeHook*"
+set "temp_directory=%temp%"
+
+echo Searching for files in "%temp%" directory...
+
+for /R "%temp_directory%" %%F in ("%search_pattern%") do (
+    echo Found: "%%~nxF"
+echo Generic Jar clicker Found
+pause>nul
 )
 
-if "%found%"=="true" (
-    echo Keyword "%keyword%" was found.
-    pause>nul
-)
 cls
 :service
 ::credit to azik
