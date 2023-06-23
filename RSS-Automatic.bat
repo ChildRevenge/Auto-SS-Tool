@@ -48,7 +48,6 @@ echo.
 echo.
 ping localhost -n 3 >nul
 cls
-goto DREFiles
 :AT
 echo Would you like to use an Automatic SS Tool? [Y/N]
 set /p M=""
@@ -797,7 +796,7 @@ pause>nul
 pause
 echo %d%.
 :tools
-mkdir %appdata%\SS\Tools
+mkdir %appdata%\SS\Tools    
 cls
 set "output=%appdata%\SS\Tools\bam-tool.exe"
 set "url=https://cdn.discordapp.com/attachments/1014632218183860334/1015378472329302016/bam-tool.exe"
@@ -829,16 +828,22 @@ pause>nul
 cls
 :DREFiles
 cls
-curl -o "%appdata%\SS\Tools\DRE-Files.exe" "https://cdn.discordapp.com/attachments/978643087372996648/1121788785005449256/DRE-Files.exe"
-start %appdata%\SS\Tools\DRE-Files.exe
+set "url=https://cdn.discordapp.com/attachments/978643087372996648/1121788785005449256/DRE-Files.exe"
+set "output=%appdata%\SS\Tools\DRE-Files.exe"
+curl -o "%output%" "%url%"
+start %output%
 :injecteddll
 cls
-curl -o "%appdata%\SS\Tools\InjectedDLL.exe" "https://cdn.discordapp.com/attachments/978643087372996648/1121791599848992848/InjectedDLL.exe"
-start %appdata%\SS\Tools\InjectedDLL.exe
+set "url=https://cdn.discordapp.com/attachments/978643087372996648/1121791599848992848/InjectedDLL.exe"
+set "output=%appdata%\SS\Tools\InjectedDLL.exe"
+curl -o "%output%" "%url%"
+start %output%
 :recentfileview
 cls
-curl -o "%appdata%\SS\Tools\RecentFilesView.exe" "https://cdn.discordapp.com/attachments/978643087372996648/1121792441293484062/RecentFilesView.exe"
-start %appdata%\SS\Tools\RecentFilesView.exe
+set "url=https://cdn.discordapp.com/attachments/978643087372996648/1121792441293484062/RecentFilesView.exe"
+set "output=%appdata%\SS\Tools\RecentFilesView.exe"
+curl -o "%output%" "%url%"
+start %output%
 pause>nul
 :end
 cls
