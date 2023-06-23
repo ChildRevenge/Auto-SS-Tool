@@ -303,10 +303,12 @@ echo %g%Deleted EventLog
 echo Empty Character
 echo Jnativehook
 echo Data Truncation
-echo Restarted Processes%d%
+echo Restarted Processes
+echo Download Cache%d%
+fsutil usn readjournal c: csv | findstr /i /c:.crdownload >> DownloadCache.txt %appdata%\SS\Fsutils\Extra\DownloadCache.txt
 fsutil usn readjournal c: csv | findstr /i /c:.evtx | findstr /i /c:0x80000200 >> DeletedEvtx.txt > %appdata%\SS\Fsutils\Extra\DeletedEventLog.txt
 fsutil usn readjournal c: csv | findstr /i /c:"?" >> EmptyC.txt > %appdata%\SS\Fsutils\Extra\EmptyCharacter.txt
-fsutil usn readjournal c: csv | findstr /i /c:"jnativehook" > %appdata%\SS\Fsutils\Extra\JNativeHooks.txt
+fsutil usn readjournal c: csv | findstr /i /c:"jnativehook" > %appdata%\SS\Fsutils\Extra\Jnat.txt
 fsutil usn readjournal c: csv | findstr /i /c:0x00080000 /c:0x00000005 >> Datatruncation.txt > %appdata%\SS\Fsutils\Extra\DataTruncation.txt
 fsutil usn readjournal c: csv | findstr /i /C:".pf" | findstr /i /C:"net" /i /C:"net1" >> RestartedProcesses.txt > %appdata%\SS\Fsutils\Extra\RestartedProcesses.txt
 cls
