@@ -872,6 +872,7 @@ if exist "%Blackweb%" (
     )
 )
 echo Scan Finished!
+echo the User's Current time:%r% %TIME%
 pause>nul
 
 pause
