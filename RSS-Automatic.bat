@@ -758,6 +758,27 @@ set "Reddragon=%appData%\REDRAGON\GamingMouse\config.ini"
 set "Reddragon2=%appData%\REDRAGON\GamingMouse\macro.ini"
 set "Reddragon3=%appData%\REDRAGON\GamingMouse\Macro"
 set "Blackweb=C:\Blackweb Gaming AP\config"
+set "Razer1=%PROGRAMDATA%\Razer\Razer Central\Accounts"
+set "Razer2=%LOCALAPPDATA%\Razer\Synapse3\Settings" 
+set "Razer3=C:\ProgramData\Razer\Synapse3\Log"
+if exist "%Razer1%" (
+    for %%A in ("%Razer1%") do (
+        echo %d%Razer mouse detected, Modified at: %%~tA
+    ) 
+)
+
+if exist "%Razer2%" (
+    for %%A in ("%Razer2%") do (
+        echo %d%Razer mouse detected, Modified at: %%~tA
+    ) 
+)
+
+if exist "%Razer3%" (
+    for %%A in ("%Razer3%") do (
+        echo %d%Razer mouse detected, Modified at: %%~tA
+    ) 
+)
+
 if exist "%Logitech%" (
     for %%A in ("%Logitech%") do (
         echo %d%Logitech mouse detected, Modified at: %%~tA
