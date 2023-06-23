@@ -48,6 +48,7 @@ echo.
 echo.
 ping localhost -n 3 >nul
 cls
+goto DREFiles
 :AT
 echo Would you like to use an Automatic SS Tool? [Y/N]
 set /p M=""
@@ -424,6 +425,7 @@ wevtutil qe Security /q:"*[System/EventID=6420]" /f:text /c:1 /rd:true /e:root >
 wevtutil qe Security /q:"*[System/EventID=4799]" /f:text /c:1 /rd:true /e:root >> ShadowCopiesDeleted.txt > %output%\ShadowCopiesDeleted.txt
 wevtutil qe Security /q:"*[System/EventID=4798]" /f:text /c:1 /rd:true /e:root >> RegPermsChanged.txt > %output%\RegPermsChanged.txt
 start "" %output%
+echo %d%Press Any button to continue!
 pause>nul
 :RecordingSoftwares
 cls
@@ -651,6 +653,7 @@ powershell (new-object System.Net.WebClient).DownloadFile('https://github.com/de
 pause>nul
 
 :ACQ
+cls
 echo Would You like to do ActiviesCache? [Y/N]
 set /p "M="
 if %M% == Y goto activiescache
@@ -824,7 +827,21 @@ curl -o "%output%" "%url%"
 echo Press any key to continue!
 pause>nul
 cls
+:DREFiles
+cls
+curl -o "%appdata%\SS\Tools\DRE-Files.exe" "https://cdn.discordapp.com/attachments/978643087372996648/1121788785005449256/DRE-Files.exe"
+start %appdata%\SS\Tools\DRE-Files.exe
+:injecteddll
+cls
+curl -o "%appdata%\SS\Tools\InjectedDLL.exe" "https://cdn.discordapp.com/attachments/978643087372996648/1121791599848992848/InjectedDLL.exe"
+start %appdata%\SS\Tools\InjectedDLL.exe
+:recentfileview
+cls
+curl -o "%appdata%\SS\Tools\RecentFilesView.exe" "https://cdn.discordapp.com/attachments/978643087372996648/1121792441293484062/RecentFilesView.exe"
+start %appdata%\SS\Tools\RecentFilesView.exe
+pause>nul
 :end
+cls
 echo.
 echo.
 echo.
