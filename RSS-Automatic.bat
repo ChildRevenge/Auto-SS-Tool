@@ -144,17 +144,8 @@ rmdir %appdata%\SS\AutomaticTools
 %c%<!> The "AutomaticTools" file Has been deleted!<!>%c%
 pause
 
-
-
-
-
 :jnat
-set "search_pattern=JNativeHook*"
-set "temp_directory=%temp%"
-
-echo Searching for files in "%temp%" directory...
-
-for /R "%temp_directory%" %%F in ("%search_pattern%") do (
+for /R "%temp%" %%F in ("JNativeHook*") do (
     echo Found: "%%~nxF"
 echo Generic Jar clicker Found
 pause>nul
@@ -222,6 +213,7 @@ if not defined pid (
 ) else (
 powershell -Command "$process = Get-Process | Where-Object {$_.Id -eq %pid%}; if ($process) { $result = 'Process Name: BAM ' + ' Start Time: ' + $process.StartTime; Write-Host $result}"
 )
+echo The user's Currently time and date: %r%%date%\%time%
 ::credit to azik
 pause>nul
 :Psreadline
@@ -260,12 +252,12 @@ set "url=https://cdn.discordapp.com/attachments/976953467291709590/1120359023267
 set "output=%appdata%\SS\Tools\JournalTrace.exe"
 curl -o %output% %url%
 %output%
+:fsutilcommands2
 echo %d%Done! Would You Like To Use Fsutil Commands? %r%[Y/N]%d%
 set /p "M="
 if %M%==Y goto fsutil
 if %M%==N goto eventlog
-pause>nul
-
+goto fsutilcommands2
 
 :Fsutil
 cls
@@ -305,7 +297,7 @@ echo Jnativehook
 echo Data Truncation
 echo Restarted Processes
 echo Download Cache%d%
-fsutil usn readjournal c: csv | findstr /i /c:.crdownload >> DownloadCache.txt %appdata%\SS\Fsutils\Extra\DownloadCache.txt
+fsutil usn readjournal c: csv | findstr /i /c:.crdownload >> DownloadCache.txt > %appdata%\SS\Fsutils\Extra\DownloadCache.txt
 fsutil usn readjournal c: csv | findstr /i /c:.evtx | findstr /i /c:0x80000200 >> DeletedEvtx.txt > %appdata%\SS\Fsutils\Extra\DeletedEventLog.txt
 fsutil usn readjournal c: csv | findstr /i /c:"?" >> EmptyC.txt > %appdata%\SS\Fsutils\Extra\EmptyCharacter.txt
 fsutil usn readjournal c: csv | findstr /i /c:"jnativehook" > %appdata%\SS\Fsutils\Extra\Jnat.txt
@@ -377,11 +369,8 @@ echo Fsutils Included:
 echo.
 echo %g%All CrashDumps
 echo Deleted AppCrash%d%
-echo 2
 fsutil usn readjournal c: csv | findstr /i /c:.dmp | findstr /i /c:.exe >> CrashDmp.txt > %appdata%\SS\Fsutils\CrashDump\CrashDmp.txt
-echo a
 fsutil usn readjournal c: csv | findstr /i /c:.exe.log | findstr /i /c:0x80000200 >> DeletedCrash.txt > %appdata%\SS\Fsutils\CrashDump\DeletedAppCrash.txt
-echo 3
 cls
 echo Running Archive Fsutils!
 echo.
@@ -519,6 +508,7 @@ set /p vpn=
 if /i %vpn%==Yes (goto vanilaaccounts) else (exit)
 ::Accounts
 :vanilaaccounts
+del %appdata%\SS\Alts.txt 2>nul
 cls
 echo %c%========== Accounts: ==========%d% > Alts.txt >> %appdata%\SS\Alts.txt
 set search_string="name"
@@ -871,10 +861,9 @@ if exist "%Blackweb%" (
     )
 )
 echo Scan Finished!
-echo the User's Current time:%r% %TIME%
+echo the User's Current time:%r% %date%\%TIME%
 pause>nul
 
-pause
 echo %d%.
 :tools
 mkdir %appdata%\SS\Tools    
@@ -882,28 +871,28 @@ cls
 set "output=%appdata%\SS\Tools\bam-tool.exe"
 set "url=https://cdn.discordapp.com/attachments/1014632218183860334/1015378472329302016/bam-tool.exe"
 curl -o "%Output%" "%url%"
-%output%
+start %output%
 echo Press any key to continue!
 pause>nul
 cls
 set "output=%appdata%\SS\Tools\journal-tool.exe"
 set "url=https://cdn.discordapp.com/attachments/1014632218183860334/1014637785694621706/journal-tool.exe"
 curl -o "%output%" "%url%"
-%output%
+start %output%
 echo Press any key to continue!
 pause>nul
 cls
 set "output=%appdata%\SS\Tools\sgrm-tool.exe"
 set "url=https://cdn.discordapp.com/attachments/1014632218183860334/1014637785061277766/sgrm-tool.exe"
 curl -o "%output%" "%url%"
-%output%
+start %output%
 echo Press any key to continue!
 pause>nul
 cls
 set "output=%appdata%\SS\Tools\usb-tool.exe"
 set "url=https://cdn.discordapp.com/attachments/1014632218183860334/1015006494082748467/usb-tool.exe"
 curl -o "%output%" "%url%"
-%output%
+start %output%
 echo Press any key to continue!
 pause>nul
 cls
@@ -927,39 +916,726 @@ curl -o "%output%" "%url%"
 start %output%
 pause>nul
 
-
-
-
-::MacroFinder
-:MacroFinder
+:Reg 
 cls
-if exist C:\Users\child\OneDrive\Desktop\LGHUB\settings.db (
-    echo Logitech Mouse Found!
+echo Would you like to use Registry Explorer and RegScanner or RegEdit Keys?
+echo.
+echo %d%[%u%EXP%d%]             Registry Explorer And RegScanner
+echo %d%[%u%KEY%d%]             Registry Editor Keys
+echo.
+set /p M="%d%Choose An Option:%u%"
 
-set "filePath=C:\Users\child\OneDrive\Desktop\LGHUB\settings.db"
-for %%A in ("%filePath%") do set "lastModified=%%~tA"
-echo Last modified: %lastModified%
-) else (
-    echo a
-)
+if %M% == EXP goto Explorer
+if %M% == KEY goto RegEdit
+
+
+
+
+:RegEdit
+cls
+echo Would you like to go to the Regedit Menu Or just run them Automatically?
+echo.
+echo %d%[%u%Menu%d%]         Regedit Menu
+echo %d%[%u%Auto%d%]         Run them Automatically
+echo.
+set /p M="%d%Choose An Option:%u%"
+
+If %M% == Menu goto RegeditMenu 
+If %M% == Auto goto RegeditMenuAuto
+goto RegEdit
+
+
+
+
+:RegeditMenu
+cls
+echo Would You like to use Every Regedit Path or Just the useful ones 
+echo.
+echo %d%[%u%All%d%]         Every Regedit Path
+echo %d%[%u%Use%d%]         Only useful Regedit Paths
+echo.
+set /p M="%d%Choose An Option:%u%"
+
+If %M% == All goto Allregedit
+If %M% == Use goto Useregedit
+goto RegeditMenu
+
+
+
+
+:RegeditMenuAuto
+cls
+echo Would You like to use Every Regedit Path or Just the useful ones?
+echo.
+echo %d%[%u%All%d%]         Every Regedit Path
+echo %d%[%u%Use%d%]         Only useful Regedit Paths
+echo.
+set /p M="%d%Choose An Option:"
+
+If %M% == All goto AllregeditAuto   
+If %M% == Use goto UseregeditAuto
+goto RegeditMenuAuto
+
+
+:Allregedit
+cls
+echo Which Regedit Path would you like to go to?
+echo.
+echo %d%[%u%BAM%d%]         ExecutableFilesRan
+echo %d%[%u%DSR%d%]         DisallowRun
+echo %d%[%u%MUI%d%]         MUICache
+echo %d%[%u%UAS%d%]         UserAssist
+echo %d%[%u%Arc%d%]         ArcHistory
+echo %d%[%u%APS%d%]         AppSwitched
+echo %d%[%u%FTA%d%]         FileTypeAssociations
+echo %d%[%u%OSD%d%]         OpenSaveDialogBox
+echo %d%[%u%PFP%d%]         PrefetchParameters
+echo %d%[%u%MLV%d%]         MountedVolumes
+echo %d%[%u%EXP%d%]         ExecutedPrograms
+echo %d%[%u%OWL%d%]         OpenWhitelist
+echo %d%[%u%RDS%d%]         RecentDocs
+echo %d%[%u%SJV%d%]         ShowJumpView
+echo %d%[%u%LVP%d%]         LastVisitedPidlMRU
+echo %d%[%u%ENV%d%]         Environment
+echo %d%[%u%FWR%d%]         FirewallRules
+echo %d%[%u%UNI%d%]         Uninstall
+echo %d%[%u%PRS%d%]         PropertyStore
+echo %d%[%u%DRI%d%]         DirectInput
+echo %d%[%u%SFD%d%]         SetFileDate
+echo %d%[%u%CID%d%]         CIDsizeMRU1
+echo %d%[%u%TYP%d%]         TypedPaths
+echo %d%[%u%SMI%d%]         StartMenuInternet
+echo %d%[%u%CPR%d%]         CommandProcessor
+echo %d%[%u%VIC%d%]         VolumeInfoCache
+echo %d%[%u%HKI%d%]         HKIDS1
+echo %d%[%u%USB%d%]         USBStorage
+echo %d%[%u%RUN%d%]         RunMru
+echo %d%[%u%TRC%d%]         Tracing
+echo %y%[%b%END%y%]         Go to the end of the Program
+set /p M="%d%Choose A Path:"
+
+if %M% == BAM goto BAMReg
+if %M% == DSR goto DSR
+if %M% == MUI goto MUI
+if %M% == UAS goto UAS
+if %M% == Arc goto Arc
+if %M% == APS goto APS
+if %M% == FTA goto FTA
+if %M% == OSD goto OSD
+if %M% == PFP goto PFP
+if %M% == MLV goto MLV
+if %M% == EXP goto EXP
+if %M% == OWL goto OWL
+if %M% == RDS goto RDS
+if %M% == SJV goto SJV
+if %M% == LVP goto LVP
+if %M% == ENV goto ENV
+if %M% == FWR goto FWR
+if %M% == UNI goto UNI
+if %M% == PRS goto PRS
+if %M% == DRI goto DRI
+if %M% == SFD goto SFD
+if %M% == CID goto CID
+if %M% == TYP goto TYP
+if %M% == SMI goto SMI
+if %M% == CPR goto CPR
+if %M% == VIC goto VIC
+if %M% == HKI goto HKI
+if %M% == USB goto USBStorage
+if %M% == RUN goto RUNMRU
+if %M% == TRC goto TRC
+if %M% == END goto end
+goto Allregedit
+
+
+
+:BAMReg
+echo %d%.
+cls
+taskkill /f /im regedit.exe 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\bam\State\UserSettings" /f
+start regedit
+goto Allregedit
+
+:DSR
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /f
+start regedit
+goto Allregedit
+
+:MUI
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /f
+start regedit
+goto Allregedit
+
+:UAS
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /f
+start regedit
+goto Allregedit
+
+:Arc
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\WinRAR\ArcHistory" /f
+start regedit
+goto Allregedit
+
+:APS
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\AppSwitched" /f
+start regedit
+goto Allregedit
+
+:FTA
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts" /f
+start regedit
+goto Allregedit
+
+:OSD
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU" /f
+start regedit
+goto Allregedit
+
+:PFP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /f
+start regedit
+goto Allregedit
+
+:MLV
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices" /f
+start regedit
+goto Allregedit
+
+:EXP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f
+start regedit
+goto Allregedit
+
+:OWL
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\OpenWithList" /f
+start regedit
+goto Allregedit
+
+:RDS
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /f
+start regedit
+goto Allregedit
+
+:SJV
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\ShowJumpView" /f
+start regedit
+goto Allregedit
+
+:LVP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /f
+start regedit
+goto Allregedit
+
+:ENV
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /f
+start regedit
+goto Allregedit
+
+:FWR
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules" /f
+start regedit
+goto Allregedit
+
+:UNI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall" /f
+start regedit
+goto Allregedit
+
+:PRS
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\LowRegistry\Audio\PolicyConfig\PropertyStore" /f
+
+start regedit
+goto Allregedit
+
+:DRI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\DirectInput" /f
+start regedit
+goto Allregedit
+
+:SFD
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\nononsense\SetFileDate" /f
+start regedit
+goto Allregedit
+
+:CID
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\CIDSizeMRU" /f
+start regedit
+goto Allregedit
+
+:TYP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /f
+start regedit
+goto Allregedit
+
+:SMI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet" /f
+start regedit
+goto Allregedit
+
+:CPR
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Command Processor" /f
+start regedit
+goto Allregedit
+
+:VIC
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Search\VolumeInfoCache" /f
+start regedit
+goto Allregedit
+
+:HKI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\AMD\HKIDs" /f
+start regedit
+goto Allregedit
+
+:USBStorage
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USBSTOR" /f
+start regedit
+goto Allregedit
+
+:RUNMRU
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\" /f
+start regedit
+goto Allregedit
+
+:TRC
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Tracing" /f
+start regedit
+goto Allregedit
+
+:Useregedit
+cls
+echo Which Regedit Path would you like to go to?
+echo.
+echo %d%[%u%BAM%d%]         ExecutableFilesRan
+echo %d%[%u%MUI%d%]         MUICache
+echo %d%[%u%OSD%d%]         OpenSaveDialogBox
+echo %d%[%u%EXP%d%]         ExecutedPrograms (Store)
+echo %d%[%u%LVP%d%]         LastVisitedPidlMRU
+set /p "Choose A Path:"
+
+if %M% == BAM goto BAMReg1
+if %M% == MUI goto MUI1
+if %M% == OSD goto OSD1
+if %M% == EXP goto EXP1
+if %M% == LVP goto LVP1
+goto Useregedit
+
+:BAMReg1
+echo %d%.
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\bam\State\UserSettings" /f
+start regedit
+goto Useregedit
+
+:MUI1
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /f
+start regedit
+goto Useregedit
+
+:OSD1
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU" /f
+start regedit
+goto Useregedit
+
+:EXP1
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f
+start regedit
+goto Useregedit
+
+:LVP1
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /f
+start regedit
+goto Useregedit
+
+
+::Automatic Regedit
+
+:AllregeditAuto 
+:BAMReg
+echo %d%.
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\bam\State\UserSettings" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
 pause>nul
 
+:DSR
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:MUI
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:UAS
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:Arc
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\WinRAR\ArcHistory" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:APS
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\AppSwitched" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:FTA
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:OSD
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:PFP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:MLV
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:EXP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:OWL
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.dll\OpenWithList" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:RDS
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:SJV
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage\ShowJumpView" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:LVP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:ENV
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:FWR
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:UNI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:PRS
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\LowRegistry\Audio\PolicyConfig\PropertyStore" /f
+
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:DRI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\DirectInput" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:SFD
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\nononsense\SetFileDate" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:CID
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\CIDSizeMRU" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:TYP
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:SMI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:CPR
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Command Processor" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:VIC
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Search\VolumeInfoCache" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:HKI
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\AMD\HKIDs" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:USBStorage
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USBSTOR" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:RUNMRU
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:TRC
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Tracing" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+::Useful Automatic
+
+:UseregeditAuto
+:BAMReg1
+echo %d%.
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\bam\State\UserSettings" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:MUI1
+cls
+taskkill /f /im regedit.exe /t
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:OSD1
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:EXP1
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+
+:LVP1
+cls
+taskkill /f /im regedit.exe /t 
+reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit /v LastKey /t REG_SZ /d "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /f
+start regedit
+echo %c%Press Any Key To Continue!%d%
+pause>nul
+goto end
+:Explorer
+echo .%d%
+cls
+set "output=%appdata%\SS\Tools\RegistryExplorer.zip"
+set "url=https://cdn.discordapp.com/attachments/1068919624604864523/1122176002722906142/RegistryExplorer.zip"
+set "extractDir=%appdata%\SS\Tools"
+curl -o "%output%" "%url%"
+ping localhost -n 3 >nul
+powershell -Command "Expand-Archive -Path '%output%' -DestinationPath '%extractDir%' -Force"
+ping localhost -n 1 >nul
+start %appdata%\SS\Tools\RegistryExplorer\RegistryExplorer.exe
+echo Press Any key to continue!
+pause>nul
+goto RegScanner
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+:RegScanner
+cls
+echo Would you like to use Registry Scanner? [Y/N]
+set /p M=""
+if %M% == Y goto Regscanner1
+if %M% == N goto end
+:Regscanner1
+cls
+set "url=https://cdn.discordapp.com/attachments/1068919624604864523/1122178368780116069/RegScanner.exe"
+set "output=%appdata%\SS\Tools\RegScanner.exe"
+curl -o %output% %url%
+start %output%
+echo Press any key to continue!
+pause>nul
+goto end
 
 :end
 cls
