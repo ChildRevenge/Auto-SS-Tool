@@ -27,6 +27,7 @@ set bo=[01m
 cls
 SET webhook=
 mkdir %appdata%\SS 2>nul
+mkdir %appdata%\SS\Tools 2>nul
 :credits
 cls
 echo.
@@ -722,6 +723,11 @@ if exist  "C:\Users\%username%\AppData\Local\CrashDumps" (
 echo Look for any suspicious files!
 
 :macros
+:startMacros
+cls
+echo %r%Scan Started!
+echo.
+echo.
 cls
 set "localAppData=%LOCALAPPDATA%"
 set "appData=%APPDATA%"
@@ -765,14 +771,14 @@ set "Marvo2=%localAppData%\BY-8801-GM917-v108\pro.dct"
 set "ReDragon=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse\config.ini" 
 set "ReDragon2=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse\macro.ini"
 set "ReDragon3=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse" 
-set "ReDragonM7=C:\Users%USERNAME%\Documents\M711\*.MacroDB" //
-:QuestionMacros
+set "ReDragonM7=C:\Users%USERNAME%\Documents\M711\*.MacroDB"
+
 echo %d%Would you like to Run Fsutil Commands? [Y/N]
 set /p M=""
-if %M% == Y goto FsutilMacros
-if %M% == N goto startMacros
-goto QuestionMacros
-:FsutilMacros
+if %M% == Y goto Fsutil
+if %M% == N goto start
+
+:Fsutil
 mkdir %appdata%\SS\Fsutils\Mouse
 cls
 fsutil usn readjournal c: csv | findstr /i /c:.mck | findstr /i /c:0x80000200 >> T16Macro.txt > %appdata%\SS\Fsutils\Mouse\T16Macro.txt
@@ -784,7 +790,7 @@ echo Press Any key to continue!
 pause>nul
 
 
-:startMacros
+:start
 cls
 if exist "%Roccat%" (
     for %%A in ("%Roccat%") do (
@@ -806,11 +812,6 @@ if exist "%Roccat3%" (
         echo %d%Roccat mouse detected, Modified at: %%~tA
     ) 
 )
-
-
-
-
-
 
 if exist "%General1%" (
     for %%A in ("%General1%") do (
@@ -877,9 +878,6 @@ if exist "%Marvo2%" (
 )
 
 
-
-::
-
 if exist "%ReDragon%" (
     for %%A in ("%ReDragon%") do (
         echo %d%ReDragon Mouse detected, Modified at: %%~tA
@@ -910,14 +908,14 @@ if exist "%ReDragonM7%" (
 
 
 
-findstr /C:"turbo: true" "%RazerT%" >nul
+findstr /C:"turbo: true" "%RazerT%" 2>nul
 if %errorlevel% equ 0 (
     echo Razer Turbo mode Is Activated
 )
 
-findstr /C:"MacroClient:Delete" "%Razer4%"
+findstr /C:"MacroClient:Delete" "%Razer4%" 2>nul
 if %errorlevel% equ 0 (
-    echo String found!
+    echo Detected a Deleted Razer Macro
 )
 
 if exist "%Razer1%" (
@@ -1031,7 +1029,13 @@ if exist "%Blackweb%" (
     )
 )
 echo Scan Finished
-echo The User's Current time:%r% %TIME%
+echo The User's Current time:%r% %date%\%TIME%
+set folderPath=%appdata%\SS\Fsutils\Mouse
+
+if exist "%folderPath%" (
+    rd /s /q "%folderPath%"
+)
+echo %c%Press any Button to Continue!
 pause>nul
 
 echo %d%.
