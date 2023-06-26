@@ -1,6 +1,6 @@
 @echo off
 cls
-set version=1.1
+set version=1.2
 title RSS Tools v%version% (%date%)
 if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
 
@@ -720,19 +720,17 @@ if exist  "C:\Users\%username%\AppData\Local\CrashDumps" (
     goto macros
 )
 echo Look for any suspicious files!
-cls
 
 :macros
 cls
-echo %r%Scan Started!
-echo.
-echo.
 set "localAppData=%LOCALAPPDATA%"
 set "appData=%APPDATA%"
 set "programFilesX86=%PROGRAMFILES(X86)%"
 set "programFiles=%PROGRAMFILES%"
 set "Logitech=%localAppData%\LGHUB\settings.db"
 set "Glorious=C:\Users\%username%\AppData\Local\BY-COMBO2\mac"
+set "Glorious1=C:\ProgramData\Glorious Core\userdata\guru\data\MacroDB.db" //
+set "Glorious2=C:\ProgramData\Glorious Core\userdata\guru\data\DevicesDB.db" // 
 set "corsair=%appData%\corsair\CUE\config.cuecfg"
 set "bloody=%programFilesX86%\Bloody7\Bloody7\UserLog\Mouse\TLcir_9EFF3FF4\language\Settings\EnvironmentVar.ini"
 set "steel=%appData%\steelseries-engine-3-client\Session Storage\000003.log"
@@ -750,6 +748,178 @@ set "Blackweb=C:\Blackweb Gaming AP\config"
 set "Razer1=%PROGRAMDATA%\Razer\Razer Central\Accounts"
 set "Razer2=%LOCALAPPDATA%\Razer\Synapse3\Settings" 
 set "Razer3=C:\ProgramData\Razer\Synapse3\Log"
+set "Razer4=%localAppData%\Razer\Synapse\log\macros\MacrosRazer3.txt" 
+set "RazerT=C:\ProgramData\Razer\Synapse3\Log\SynapseService.log" 
+set "Roccat=C:\Users\%username%\AppData\Roaming\ROCCAT\SWARM\macro\macro_list.dat" 
+set "Roccat2=C:\Users\%username%\AppData\Roaming\ROCCAT\SWARM\macro\custom_macro_list.dat" 
+set "Roccat3=C:\Users\%username%\AppData\Roaming\ROCCAT\SWARM\macro\macro_list.dat" 
+set "General1=C:\users\%username%\appdata\BYCOMBO2\mac\*mcf" 
+set "KromKolt=C:\Users\%username%\AppData\Local\VirtualStore\Program Files (x86)\KROM KOLT\Config\sequence.dat" 
+set "Asus=C:\users\%username%\documents\ASUS\ROG\ROG Armoury\common\macro\*.GMAC" 
+set "Fantech=C:\Program Files (x86)\FANTECH VX7 Gaming Mouse\config.ini" 
+set "T16=%LOCALAPPDATA%\BY-COMBO\curid.dct" 
+set "T161=%LOCALAPPDATA%\BY-COMBO\pro.dct" 
+set "LIX=C:\Program Files (x86)\SPC Gear" 
+set "Marvo=%localAppData%\BY-8801-GM917-v108\curid.dct" 
+set "Marvo2=%localAppData%\BY-8801-GM917-v108\pro.dct" 
+set "ReDragon=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse\config.ini" 
+set "ReDragon2=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse\macro.ini"
+set "ReDragon3=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse" 
+set "ReDragonM7=C:\Users%USERNAME%\Documents\M711\*.MacroDB" //
+:QuestionMacros
+echo %d%Would you like to Run Fsutil Commands? [Y/N]
+set /p M=""
+if %M% == Y goto FsutilMacros
+if %M% == N goto startMacros
+goto QuestionMacros
+:FsutilMacros
+mkdir %appdata%\SS\Fsutils\Mouse
+cls
+fsutil usn readjournal c: csv | findstr /i /c:.mck | findstr /i /c:0x80000200 >> T16Macro.txt > %appdata%\SS\Fsutils\Mouse\T16Macro.txt
+fsutil usn readjournal c: csv | findstr /i /c:.amc2 | findstr /i /c:0x80000200 >> BloodyMacros.txt > %appdata%\SS\Fsutils\Mouse\BloodyMacros.txt
+fsutil usn readjournal c: csv | findstr /i /c:.mcf | findstr /i /c:0x80000200 >> Glorious.txt > %appdata%\SS\Fsutils\Mouse\Glorious.txt
+fsutil usn readjournal c: csv | findstr /i /c:.cuecfg | findstr /i /c:0x80000200 >> Corsair.txt > %appdata%\SS\Fsutils\Mouse\Corsair.txt
+start "" %appdata%\SS\Fsutils\Mouse
+echo Press Any key to continue!
+pause>nul
+
+
+:startMacros
+cls
+if exist "%Roccat%" (
+    for %%A in ("%Roccat%") do (
+        echo %d%Roccat mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+if exist "%Roccat2%" (
+    for %%A in ("%Roccat2%") do (
+        echo %d%Roccat detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+if exist "%Roccat3%" (
+    for %%A in ("%Roccat3%") do (
+        echo %d%Roccat mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+
+
+
+if exist "%General1%" (
+    for %%A in ("%General1%") do (
+        echo %d%Glorious, Ajazz, AVF, yanpol or uRage Macro detected, Modified at: %%~tA
+    ) 
+)
+
+
+if exist "%KromKolt%" (
+    for %%A in ("%KromKolt%") do (
+        echo %d%KromKolt Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+if exist "%Asus%" (
+    for %%A in ("%Asus%") do (
+        echo %d%Asus Macro detected, Modified at: %%~tA
+    ) 
+)
+
+if exist "%Fantech%" (
+    for %%A in ("%Fantech%") do (
+        echo %d%Fantech Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+if exist "%T161%" (
+    for %%A in ("%T161%") do (
+        echo %d%T16 Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+
+if exist "%T16%" (
+    for %%A in ("%T16%") do (
+        echo %d%T16 Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+if exist "%LIX%" (
+    for %%A in ("%LIX%") do (
+        echo %d%Lix Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+if exist "%Marvo%" (
+    for %%A in ("%Marvo%") do (
+        echo %d%Marvo Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+if exist "%Marvo2%" (
+    for %%A in ("%Marvo2%") do (
+        echo %d%Marvo Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+::
+
+if exist "%ReDragon%" (
+    for %%A in ("%ReDragon%") do (
+        echo %d%ReDragon Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+
+if exist "%ReDragon2%" (
+    for %%A in ("%ReDragon2%") do (
+        echo %d%ReDragon Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+if exist "%ReDragon3%" (
+    for %%A in ("%ReDragon3%") do (
+        echo %d%ReDragon Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+if exist "%ReDragonM7%" (
+    for %%A in ("%ReDragonM7%") do (
+        echo %d%ReDragon M711 Mouse detected, Modified at: %%~tA
+    ) 
+)
+
+
+
+findstr /C:"turbo: true" "%RazerT%" >nul
+if %errorlevel% equ 0 (
+    echo Razer Turbo mode Is Activated
+)
+
+findstr /C:"MacroClient:Delete" "%Razer4%"
+if %errorlevel% equ 0 (
+    echo String found!
+)
+
 if exist "%Razer1%" (
     for %%A in ("%Razer1%") do (
         echo %d%Razer mouse detected, Modified at: %%~tA
@@ -860,8 +1030,8 @@ if exist "%Blackweb%" (
         echo Blackweb mouse detected, Modified at: %%~tA
     )
 )
-echo Scan Finished!
-echo the User's Current time:%r% %date%\%TIME%
+echo Scan Finished
+echo The User's Current time:%r% %TIME%
 pause>nul
 
 echo %d%.
