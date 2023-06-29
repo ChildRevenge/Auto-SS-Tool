@@ -95,7 +95,6 @@ cls
 echo %c%Downloading . . .%c%
 curl -o "%appdata%\SS\AutomaticTools\Ocean.exe" "https://anticheat.site/downloads/windows/"
 "%appdata%\SS\AutomaticTools\Ocean.exe"
-
 goto AutomaticTools
 
 :Golden
@@ -103,7 +102,6 @@ cls
 echo %c%Downloading . . .%c%
 curl -o "%appdata%\SS\AutomaticTools\Golden.exe" "https://raw.githubusercontent.com/NotSnakeSilent/Executables/main/Golden.exe"
 "%appdata%\SS\AutomaticTools\Golden.exe"
-
 goto AutomaticTools
 
 
@@ -286,7 +284,6 @@ fsutil usn readjournal c: csv | findstr /i /c:.cuecfg | findstr /i /c:0x80000200
 fsutil usn readjournal c: csv | findstr /i /c:.db | findstr /i /c:0x80000200 >> logitech.txt > %appdata%\SS\Fsutils\Macros\logitech.txt
 fsutil usn readjournal c: csv | findstr /i /c:".com" | findstr /i /c:"0x80000200" >> DeletedMacroSwitcher.txt > %appdata%\SS\Fsutils\Macros\Macroswitcher.txt
 cls
-
 echo Running Extras Fsutils!
 echo.
 echo.
@@ -416,97 +413,41 @@ echo %d%Press Any button to continue!
 pause>nul
 :RecordingSoftwares
 cls
-:recording
-tasklist /fi "ImageName eq nvcontainer.exe" /fo csv 2>nul | find /I "nvcontainer" >nul
-if %errorlevel%==1 goto obs
-if %errorlevel%==0 echo %c%Shadowplay could be recording, Would you like to close it? (yes, No) 
-set /p term=
-if /i %term%==Yes (taskkill /f /im nvcontainer.exe /t >nul & set %term%=e & goto obs) else (goto obs)
+:check_process
+setlocal enabledelayedexpansion
+set "processes=mirillis wmcap playclaw XSplit Screencast camtasia dxtory nvcontainer obs64 bdcam RadeonSettings Fraps CamRecorder XSplit.Core ShareX Action lightstream streamlabs webrtcvad openbroadcastsoftware movavi.screen.recorder icecreamscreenrecorder smartpixel d3dgear gadwinprintscreen apowersoftfreescreenrecorder bandicamlauncher hypercam loiloilgamerecorder nchexpressions captura vokoscreenNG simple.screen.recorder recordmydesktop kazam gtk-recordmydesktop screenstudio screenkey jupyter-notebook"
+for %%p in (%processes%) do (
+    tasklist /fi "ImageName eq %%p.exe" /fo csv 2>nul | find /I "%%p" >nul
+    if !errorlevel! equ 0 (
+        echo %d%%%%p Is Recording. Would you like me to close it? [Y/N]
+        set /p "M="
+        if "!M!" == "Y" (
+            taskkill /f /im %%p.exe /t >nul
+        ) else (
+            goto vpn
+        )
+    )
+)
 
-:obs
-tasklist /fi "ImageName eq obs64.exe" /fo csv 2>nul | find /I "obs64" >nul
-if %errorlevel%==1 goto bdcam
-if %errorlevel%==0 echo %c%OBS could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im obs64.exe /t >nul & set %term%=e & goto bdcam) else (goto bdcam)
-
-:bdcam
-tasklist /fi "ImageName eq bdcam.exe" /fo csv 2>nul | find /I "bdcam" >nul
-if %errorlevel%==1 goto radeon
-if %errorlevel%==0 echo %c%Bandicam could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im bdcam.exe /t >nul & set %term%=e & goto radeon) else (goto radeon)
-
-:radeon
-tasklist /fi "ImageName eq RadeonSettings.exe" /fo csv 2>nul | find /I "RadeonSettings" >nul
-if %errorlevel%==1 goto action
-if %errorlevel%==0 echo %c%Randeon could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im RadeonSettings.exe /t >nul & set %term%=e & goto fraps) else (goto fraps)
-
-:fraps
-tasklist /fi "ImageName eq Fraps.exe" /fo csv 2>nul | find /I "Fraps" >nul
-if %errorlevel%==1 goto camrecorder
-if %errorlevel%==0 echo %c%Fraps could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im Fraps.exe /t >nul & set %term%=e & goto camrecorder) else (goto camrecorder)
-
-:camrecorder
-tasklist /fi "ImageName eq CamRecorder.exe" /fo csv 2>nul | find /I "CamRecorder" >nul
-if %errorlevel%==1 goto xcore
-if %errorlevel%==0 echo %c%CamRecorder could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im CamRecorder.exe /t >nul & set %term%=e & goto xcore) else (goto xcore)
-
-:xcore
-tasklist /fi "ImageName eq XSplit.Core.exe" /fo csv 2>nul | find /I "XSplit.Core" >nul
-if %errorlevel%==1 goto sharex
-if %errorlevel%==0 echo %c%XSplit Core could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im XSplit.Core.exe /t >nul & set %term%=e & goto sharex) else (goto sharex)
-
-:sharex
-tasklist /fi "ImageName eq ShareX.exe" /fo csv 2>nul | find /I "ShareX" >nul
-if %errorlevel%==1 goto action
-if %errorlevel%==0 echo %c%ShareX could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im ShareX.exe /t >nul & set %term%=e & goto action) else (goto action)
-
-:action
-tasklist /fi "ImageName eq Action.exe" /fo csv 2>nul | find /I "Action" >nul
-if %errorlevel%==1 goto vpn
-if %errorlevel%==0 echo %c%Action could be recording, Would you like to close it? (Yes, No)
-set /p term=
-if /i %term%==Yes (taskkill /f /im Action.exe /t >nul & set %term%=e & taskkill /f /im action_svc.exe /t >nul goto vpn) else (goto vpn)
-
-::vpns
+endlocal
 :vpn
-tasklist /fi "ImageName eq Windscribe.exe" /fo csv 2>nul | find /I "Windscribe" >nul
-if %errorlevel%==1 goto pia
-if %errorlevel%==0 echo %c%Windscribe VPN is running, continue to SS? (Yes, No)
-set /p vpn=
-if /i %vpn%==Yes (goto pia) else (exit)
+:checkvpns
+setlocal enabledelayedexpansion
+set "processes=pia-client ProtonVPNService IpVanish WindScribe ExpressVPN NordVPN CyberGhost pia-tray SurfShark VyprVPN HSSCP TunnelBear ProtonVPN"
+for %%p in (%processes%) do (
+    tasklist /fi "ImageName eq %%p.exe" /fo csv 2>nul | find /I "%%p" >nul
+    if !errorlevel! equ 0 (
+        echo A VPN is running on the user's computer! The VPN is %d%%%%p.
+        echo %d%[%g%1%d%]                  %g%Continue the Screenshare
+        echo %d%[%g%2%d%]                  %g%End the Screenshare
+        set /p M=""
+        if "%M%" == "1" (
+            taskkill /f /im %%p.exe /t >nul
+        ) 
+        if "%M%" == "2" goto end
+    )
+)
 
-:pia
-tasklist /fi "ImageName eq pia-client.exe" /fo csv 2>nul | find /I "pia-client" >nul
-if %errorlevel%==1 goto proton
-if %errorlevel%==0 echo %c%PIA VPN is running, continue to SS? (Yes, No)
-set /p vpn=
-if /i %vpn%==Yes (goto proton) else (exit)
-
-:proton
-tasklist /fi "ImageName eq ProtonVPNService.exe" /fo csv 2>nul | find /I "ProtonVPN" >nul
-if %errorlevel%==1 goto ipvanish
-if %errorlevel%==0 echo %c%ProtonVPN VPN is running, continue to SS? (Yes, No)
-set /p vpn=
-if /i %vpn%==Yes (goto ipvanish) else (exit)
-
-:ipvanish
-tasklist /fi "ImageName eq IPVanish.exe" /fo csv 2>nul | find /I "IPVanish" >nul
-if %errorlevel%==1 goto vanilaaccounts
-if %errorlevel%==0 echo %c%IPVanish VPN is running, continue to SS? (Yes, No)
-set /p vpn=
-if /i %vpn%==Yes (goto vanilaaccounts) else (exit)
 ::Accounts
 :vanilaaccounts
 del %appdata%\SS\Alts.txt 2>nul
@@ -579,6 +520,7 @@ for %%F in ("%folderPath%\*") do (
     
 :open
 notepad %appdata%\SS\Alts.txt
+echo %d%Press any button to Continue!
 pause>nul
 
 
@@ -1101,10 +1043,7 @@ set /p M="%d%Choose An Option:%u%"
 
 if %M% == EXP goto Explorer
 if %M% == KEY goto RegEdit
-
-
-
-
+goto Reg
 :RegEdit
 cls
 echo Would you like to go to the Regedit Menu Or just run them Automatically?
