@@ -269,6 +269,11 @@ goto fsutilcommands2
 
 :Fsutil
 cls
+setlocal enabledelayedexpansion
+set folderPath=%appdata%\SS\Fsutils
+if exist "%folderPath%" (
+    rd /s /q "%folderPath%"
+)
 mkdir %appdata%\SS\Fsutils\Macros 2>nul
 mkdir %appdata%\SS\Fsutils\Extra 2>nul
 mkdir %appdata%\SS\Fsutils\EXE 2>nul
@@ -278,124 +283,39 @@ mkdir %appdata%\SS\Fsutils\JAR 2>nul
 mkdir %appdata%\SS\Fsutils\BAT 2>nul
 mkdir %appdata%\SS\Fsutils\CrashDump 2>nul
 mkdir %appdata%\SS\Fsutils\Archives 2>nul
+mkdir %appdata%\SS\Fsutils 2>nul
+fsutil usn readjournal c: csv >> %appdata%\SS\Fsutils\FsutilJournal.txt
+set Fsutil="%appdata%\SS\Fsutils\FsutilJournal.txt"
+findstr /i /c:".exe" "%Fsutil%" | findstr /i /c:"0x80000200" >> "%appdata%\SS\Fsutils\EXE\DeletedExes.txt"
+findstr /i /c:".exe" "%Fsutil%" | findstr /i /c:"0x00080000" >> "%appdata%\SS\Fsutils\EXE\ObjectIDChange.txt"
+findstr /i /c:".exe" "%Fsutil%" | findstr /i /c:"0x00001000" >> "%appdata%\SS\Fsutils\EXE\RenamedExes.txt"
+findstr /i /c:".mcf" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Macros\glorious.txt
+findstr /i /c:".cuecfg" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Macros\corsair.txt
+findstr /i /c:".db" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Macros\logitech.txt
+findstr /i /c:".com" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Macros\Macroswitcher.txt
+findstr /i /c:".crdownload" "%Fsutil%" >> %appdata%\SS\Fsutils\Extra\DownloadCache.txt
+findstr /i /c:".evtx" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Extra\DeletedEventLog.txt
+findstr /i /c:"?" "%Fsutil%" >> %appdata%\SS\Fsutils\Extra\EmptyCharacter.txt
+findstr /i /c:"jnativehook" "%Fsutil%" >> %appdata%\SS\Fsutils\Extra\Jnat.txt
+findstr /i /c:"0x00080000" "%Fsutil%" | findstr /i /c:"0x00000005" >> %appdata%\SS\Fsutils\Extra\DataTruncation.txt
+findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\JAR\RenamedJars.txt
+findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\JAR\DeletedJars.txt
+findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x00000020" >> %appdata%\SS\Fsutils\JAR\AllJars.txt
+findstr /i /c:"Data Truncation" "%Fsutil%" | findstr /i /c:".jar" >> %appdata%\SS\Fsutils\JAR\JarDataTruncation.txt
+findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\PFs\RenamedPF.txt
+findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\PFs\DeletedPF.txt
+findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x00008000" >> %appdata%\SS\Fsutils\PFs\Prefetch.txt
+findstr /i /c:".bat" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\BAT\RenamedBats.txt
+findstr /i /c:".bat" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\BAT\DeletedBats.txt
+findstr /i /c:".dmp" "%Fsutil%" | findstr /i /c:".exe" >> %appdata%\SS\Fsutils\CrashDump\CrashDmp.txt
+findstr /i /c:".exe.log" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\CrashDump\DeletedAppCrash.txt
+findstr /i /c:".rar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Archives\DeletedRar.txt
+findstr /i /c:".zip" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Archives\DeletedZip.txt
+findstr /i /c:".7z" "%Fsutil%" | findstr /i /c:"0x80000200" >>  %appdata%\SS\Fsutils\Archives\Deleted7z.txt
+findstr /i /c:".tar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Archives\DeletedTar.txt
+findstr /i /c:".gz" "%Fsutil%" | findstr /i /c:"0x80000200" >>  %appdata%\SS\Fsutils\Archives\DeletedGz.txt
 cls
-echo %d%Running Macro Fsutils!
-echo.
-echo.
-echo Fsutils included:
-echo.
-echo %g%Glorious
-echo corsair
-echo logitech
-echo MacroSwitcher Generic%d%
-fsutil usn readjournal c: csv | findstr /i /c:.mcf | findstr /i /c:0x80000200 >> Glorious.txt > %appdata%\SS\Fsutils\Macros\glorious.txt
-fsutil usn readjournal c: csv | findstr /i /c:.cuecfg | findstr /i /c:0x80000200 >> Corsair.txt > %appdata%\SS\Fsutils\Macros\corsair.txt
-fsutil usn readjournal c: csv | findstr /i /c:.db | findstr /i /c:0x80000200 >> logitech.txt > %appdata%\SS\Fsutils\Macros\logitech.txt
-fsutil usn readjournal c: csv | findstr /i /c:".com" | findstr /i /c:"0x80000200" >> DeletedMacroSwitcher.txt > %appdata%\SS\Fsutils\Macros\Macroswitcher.txt
-cls
-echo Running Extras Fsutils!
-echo.
-echo.
-echo Fsutils included:
-echo.
-echo %g%Deleted EventLog
-echo Empty Character
-echo Jnativehook
-echo Data Truncation
-echo Restarted Processes
-echo Download Cache%d%
-fsutil usn readjournal c: csv | findstr /i /c:.crdownload >> DownloadCache.txt > %appdata%\SS\Fsutils\Extra\DownloadCache.txt
-fsutil usn readjournal c: csv | findstr /i /c:.evtx | findstr /i /c:0x80000200 >> DeletedEvtx.txt > %appdata%\SS\Fsutils\Extra\DeletedEventLog.txt
-fsutil usn readjournal c: csv | findstr /i /c:"?" >> EmptyC.txt > %appdata%\SS\Fsutils\Extra\EmptyCharacter.txt
-fsutil usn readjournal c: csv | findstr /i /c:"jnativehook" > %appdata%\SS\Fsutils\Extra\Jnat.txt
-fsutil usn readjournal c: csv | findstr /i /c:0x00080000 /c:0x00000005 >> Datatruncation.txt > %appdata%\SS\Fsutils\Extra\DataTruncation.txt
-fsutil usn readjournal c: csv | findstr /i /C:".pf" | findstr /i /C:"net" /i /C:"net1" >> RestartedProcesses.txt > %appdata%\SS\Fsutils\Extra\RestartedProcesses.txt
-cls
-echo Running Exe Fsutils!
-echo.
-echo.
-echo Fsutils included:
-echo.
-echo %g%Renamed Executables
-echo Deleted Executables
-echo Executeable ObjectIDChange
-fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00001000 >> RenamedExes.txt > %appdata%\SS\Fsutils\EXE\RenamedExes.txt
-fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x80000200 >> DeletedExes.txt > %appdata%\SS\Fsutils\EXE\DeletedExes.txt
-fsutil usn readjournal c: csv | findstr /i /c:.exe | findstr /i /c:0x00080000 >> ObjectIDChange.txt > %appdata%\SS\Fsutils\EXE\ObjectIDChange.txt
-cls
-echo Running DLL Fsutils!
-echo.
-echo.
-echo Fsutils Included:
-echo.
-echo %g%Deleted DLLs
-echo All DLLs%d%
-fsutil usn readjournal c: csv | findstr /i /c:.dll | findstr /i /c:0x80000200 >> DeletedDlls.txt > %appdata%\SS\Fsutils\DLL\DeletedDlls.txt
-fsutil usn readjournal c: csv | findstr /i /c:.dll >> dll.txt > %appdata%\SS\Fsutils\DLL\AllDLL.txt
-cls
-echo Running Jar Fsutils!
-echo.
-echo.
-echo Fsutils Included:
-echo.
-echo %g%Renamed Jars
-echo Deleted Jars
-echo All Jars
-echo Jar DataTruncation%d%
-fsutil usn readjournal c: csv | findstr /i /c:.jar | findstr /i /c:0x00001000 >> RenamedJars.txt > %appdata%\SS\Fsutils\JAR\RenamedJars.txt
-fsutil usn readjournal c: csv | findstr /i /c:.jar | findstr /i /c:0x80000200 >> DeletedJars.txt > %appdata%\SS\Fsutils\JAR\DeletedJars.txt
-fsutil usn readjournal c: csv | findstr /i /c:.jar | findstr /i /c:0x00000020 >> AllJars.txt > %appdata%\SS\Fsutils\JAR\AllJars.txt
-fsutil usn readjournal c: csv | findstr /i /c:"Data Truncation" | findstr /i /c:.jar  >> DataTruncation.txt > %appdata%\SS\Fsutils\JAR\JarDataTruncation.txt
-cls
-echo Running Prefetch Fsutils!
-echo.
-echo.
-echo Fsutils Included:
-echo.
-echo %g%Renamed PFs
-echo Deleted PFs 
-echo General Prefetch%d%
-fsutil usn readjournal c: csv | findstr /i /c:.pf | findstr /i /c:0x00001000 >> RenamedPFs.txt > %appdata%\SS\Fsutils\PFs\RenamedPF.txt
-fsutil usn readjournal c: csv | findstr /i /c:.pf | findstr /i /c:0x80000200 >> DeletedPFs.txt > %appdata%\SS\Fsutils\PFs\DeletedPF.txt
-fsutil usn readjournal c: csv | findstr /i /c:.pf | findstr /i /c:0x00008000 >> Prefetch.txt > %appdata%\SS\Fsutils\PFs\Prefetch.txt
-cls
-echo Running Bat Fsutils!
-echo.
-echo.
-echo Fsutils Included:
-echo.
-echo %g%Renamed Batch
-echo Deleted Batch%d%
-fsutil usn readjournal c: csv | findstr /i /c:.bat | findstr /i /c:0x00001000 >> RenamedBats.txt > %appdata%\SS\Fsutils\BAT\RenamedBats.txt
-fsutil usn readjournal c: csv | findstr /i /c:.bat | findstr /i /c:0x80000200 >> DeletedBats.txt > %appdata%\SS\Fsutils\BAT\DeletedBats.txt
-cls
-echo Running CrashDump Fsutils!
-echo.
-echo.
-echo Fsutils Included:
-echo.
-echo %g%All CrashDumps
-echo Deleted AppCrash%d%
-fsutil usn readjournal c: csv | findstr /i /c:.dmp | findstr /i /c:.exe >> CrashDmp.txt > %appdata%\SS\Fsutils\CrashDump\CrashDmp.txt
-fsutil usn readjournal c: csv | findstr /i /c:.exe.log | findstr /i /c:0x80000200 >> DeletedCrash.txt > %appdata%\SS\Fsutils\CrashDump\DeletedAppCrash.txt
-cls
-echo Running Archive Fsutils!
-echo.
-echo.
-echo Fsutils Included:
-echo.
-echo %g%Deleted Rar
-echo Deleted Zip
-echo Deleted 7z
-echo Deleted Tar
-echo Deleted Gz%d%
-fsutil usn readjournal c: csv | findstr /i /c:.rar | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedRar.txt
-fsutil usn readjournal c: csv | findstr /i /c:.zip | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedZip.txt
-fsutil usn readjournal c: csv | findstr /i /c:.7z | findstr /i /c:0x80000200 >>  %appdata%\SS\Fsutils\Archives\Deleted7z.txt
-fsutil usn readjournal c: csv | findstr /i /c:.tar | findstr /i /c:0x80000200 >> %appdata%\SS\Fsutils\Archives\DeletedTar.txt
-fsutil usn readjournal c: csv | findstr /i /c:.gz | findstr /i /c:0x80000200 >>  %appdata%\SS\Fsutils\Archives\DeletedGz.txt
-cls
-echo Finished! Press Any Button To Continue!
+echo Finished! Press Any Button To Continue
 pause>nul
 :eventlog
 mkdir %appdata%\SS\EventLog 2>nul
