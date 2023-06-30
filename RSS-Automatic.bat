@@ -4,7 +4,11 @@ set version=1.2
 title RSS Tools v%version% (%date%)
 if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
 
+set folderPath=%appdata%\SS
 
+if exist "%folderPath%" (
+    rd /s /q "%folderPath%"
+)
 :var
 set g=[92m
 set r=[91m
@@ -30,31 +34,36 @@ mkdir %appdata%\SS 2>nul
 mkdir %appdata%\SS\Tools 2>nul
 :credits
 cls
+chcp 65001 >nul
 echo.
 echo.
 echo.
 echo.
 echo.
 echo.
-echo.    
-echo             %d%        _///////      _//////// _//         _//  _//////// _///       _//    _////      _////////
-echo                     _//    _//    _//        _//       _//   _//         _/ _//   _//   _/    _//   _//      
-echo                     _//    _//    _//         _//     _//    _//         _// _//  _//  _//          _//      
-echo                     _/ _//        _//////      _//   _//     _//////     _//  _// _//  _//          _//////  
-echo                     _//  _//      _//           _// _//      _//         _//   _/ _//  _//   _////  _//      
-echo                     _//    _//    _//            _////       _//         _//    _/ //   _//    _/   _//      
-echo                     _//      _//  _////////       _//        _////////   _//      _//    _/////     _////////
-echo.                                                                                
 echo.
+echo.
+echo.
+echo                 %c%             ██████╗ ███████╗██╗   ██╗███████╗███╗   ██╗ ██████╗ ███████╗
+echo                              ██╔══██╗██╔════╝██║   ██║██╔════╝████╗  ██║██╔════╝ ██╔════╝
+echo                              ██████╔╝█████╗  ██║   ██║█████╗  ██╔██╗ ██║██║  ███╗█████╗  
+echo                              ██╔══██╗██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║██║   ██║██╔══╝  
+echo                              ██║  ██║███████╗ ╚████╔╝ ███████╗██║ ╚████║╚██████╔╝███████╗
+echo                              ╚═╝  ╚═╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝                                                     
+echo.                                                                                                                                                                                                                                                                                                               
+tasklist /fi "ImageName eq Javaw.exe" /fo csv 2>nul | find /I "Javaw" >nul
+if "%ERRORLEVEL%"=="0" echo                                                   %g%Minecraft found.%white%
+if "%ERRORLEVEL%"=="1" echo                                                   %r%Minecraft not found.%white%
 ping localhost -n 3 >nul
 cls
 :AT
+cls
 echo Would you like to use an Automatic SS Tool? [Y/N]
 set /p M=""
 if %M%==N goto jnat
 if %M%==Y goto AutomaticTools
-goto AT
 
+goto AT
 
 :AutomaticTools
 cls
@@ -67,8 +76,7 @@ echo %d%[%u%Avenge%d%]     Download Avenge
 echo %d%[%u%Paladin%d%]    Download Paladin
 echo %d%[%u%SKY%d%]        Download Skyy 
 echo %d%[%u%SSD%d%]        Download SSDetector
-echo %b%[%y%Done%b%]       Delete AutomaticTools Folder
-echo %b%[%y%Menu%b%]       Go Menu
+echo %b%[%y%CON%b%]        Continue With The Screenshare
 echo.
 set /p M="%d%What SS Tool Would You Like To Use?%u%"
 
@@ -79,7 +87,7 @@ If %M% == Avenge goto Avenge
 If %M% == Paladin goto Paladin
 if %M% == SKY goto skyy
 if %M% == SSD goto SSD
-If %M% == Done goto macros
+If %M% == CON goto Continue10
 
 
 :ech
@@ -142,8 +150,9 @@ del %appdata%\SS\AutomaticTools
 rmdir %appdata%\SS\AutomaticTools
 %c%<!> The "AutomaticTools" file Has been deleted!<!>%c%
 pause
-
+:Continue10
 :jnat
+chcp 850 >nul
 for /R "%temp%" %%F in ("JNativeHook*") do (
     echo Found: "%%~nxF"
 echo Generic Jar clicker Found
@@ -231,7 +240,7 @@ if exist "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSRea
 cls
 set "url=https://cdn.discordapp.com/attachments/978643087372996648/1120364506539892788/Service-Execution.exe"
 set "output=%appdata%\SS\Tools\Service-Execution.exe"
-curl -o %output% %url%
+curl -o %output% %url% 
 start "" %output%
 
 
@@ -593,21 +602,48 @@ goto ACQ
 
 :activiescache
 cls
-set "searchDir=C:\Users\%USERNAME%\AppData\Local\ConnectedDevicesPlatform"
-set "fileName=activitiescache.db"
+setlocal enabledelayedexpansion
 
-for /f "delims=" %%G in ('dir /b /s /od "%searchDir%\%fileName%" 2^>nul') do (
-    set "activitiesCachePath=%%G"
-    goto :found
+set "targetFile=ActivitiesCache.db"
+set "targetFolder=C:\Users\%USERNAME%\AppData\Local\ConnectedDevicesPlatform"
+
+REM Count the number of target files found
+set "count=0"
+for /r "%targetFolder%" %%F in ("%targetFile%") do (
+    set /a "count+=1"
+    set "filePath=%%~dpF"
+    set "fileName=%%~nxF"
+    set "fileFullPath=%%~fF"
+
+    echo [%r%!count!%d%] File: !fileName!
+    echo    Directory: !filePath!
+echo.
 )
 
-:found
-if defined activitiesCachePath (
-    echo Activities Cache Path: "%activitiesCachePath%"
-) else (
-    echo File not found.
+if %count% EQU 0 (
+    echo No "%targetFile%" file found.
+    goto :EOF
 )
 
+if %count% EQU 1 (
+    echo "%targetFile%" file found at: %filePath%
+    goto :EOF
+)
+
+echo Multiple "%targetFile%" files found.
+set /p "choice=%r%Enter the number of the file to select: "%d%
+
+set /a "choice=choice-1"
+set "count=0"
+for /r "%targetFolder%" %%F in ("%targetFile%") do (
+    if !count! EQU %choice% (
+        set "filePath=%%~dpF"
+        goto :BreakLoop
+    )
+    set /a "count+=1"
+)
+:BreakLoop
+:eof
 
 mkdir %appdata%\SS\Automatic 
 cls
@@ -621,9 +657,9 @@ ping localhost -n 3 >nul
 powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
 cls
 setlocal enabledelayedexpansion
-mkdir %appdata%\SS\Automatic\WxTCmd >nul
+mkdir %appdata%\SS\Automatic\WxTCmd 2>nul
 cd %appdata%\SS\Automatic
-WxTCmd.exe -f "%activitiesCachePath%" --csv %appdata%\SS\Automatic\WxTCmd
+WxTCmd.exe -f "%filePath%\%targetFile%" --csv "%appdata%\SS\Automatic\WxTCmd"
 cd %appdata%\SS\Automatic\WxTCmd
 del *_*_Activity_PackageIDs.csv
 del *_*_Activity.csv
@@ -640,7 +676,7 @@ for %%F in ("%folderPath%\*") do (
 
 
 cls
-mkdir %appdata%\SS\Automatic\Timelineexplorer >nul
+mkdir %appdata%\SS\Automatic\Timelineexplorer 2>nul
 set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/TimelineExplorer.zip"
 set "output=%appdata%\SS\Automatic\TimelineExplorer.zip"
 set "zipFile=%appdata%\SS\Automatic\TimelineExplorer.zip"
@@ -649,11 +685,12 @@ curl -o "%output%" "%url%"
 ping localhost -n 3 >nul
 powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
 cls
-setlocal enabledelayedexpansion
+
 set "timelineExePath=%appdata%\SS\Automatic\TimelineExplorer\TimelineExplorer.exe"
 start "" "%timelineExePath%" "%activityop%"
-
-
+echo Press any key to continue!
+pause>nul
+endlocal
 :CD
 cls
 if exist  "C:\Users\%username%\AppData\Local\CrashDumps" (
@@ -1034,15 +1071,17 @@ pause>nul
 
 :Reg 
 cls
-echo Would you like to use Registry Explorer and RegScanner or RegEdit Keys?
+echo Would you like to use Registry Explorer and RegScanner, RegEdit Keys or Not use Registry Editor?
 echo.
 echo %d%[%u%EXP%d%]             Registry Explorer And RegScanner
 echo %d%[%u%KEY%d%]             Registry Editor Keys
+echo %d%[%u%CON%d%]             Continue The SS Tool
 echo.
 set /p M="%d%Choose An Option:%u%"
 
 if %M% == EXP goto Explorer
 if %M% == KEY goto RegEdit
+if %M% == CON goto ContinueReg
 goto Reg
 :RegEdit
 cls
@@ -1749,7 +1788,7 @@ start %output%
 echo Press any key to continue!
 pause>nul
 goto end
-
+:ContinueReg
 :end
 cls
 echo.
@@ -1759,13 +1798,22 @@ echo.
 echo.
 echo.
 echo.
-echo         %g%            _///////    _////////_//         _//_///// ///_///      _//   _////    _////////
-echo                     _//    _//  _//       _//       _// _//       _/ _//   _//  _/    _//  _//      
-echo                     _//    _//  _//        _//     _//  _//       _// _//  _// _//         _//      
-echo                     _/ _//      _//////     _//   _//   _//////   _//  _// _// _//         _//////  
-echo                     _//  _//    _//          _// _//    _//       _//   _/ _// _//   _//// _//      
-echo                     _//    _//  _//           _////     _//       _//    _/ //  _//    _/  _//      
-echo                     _//      _//_////////      _//      _//////// _//      _//   _/////    _////////
+chcp 65001 >nul
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo                 %c%             ██████╗ ███████╗██╗   ██╗███████╗███╗   ██╗ ██████╗ ███████╗
+echo                              ██╔══██╗██╔════╝██║   ██║██╔════╝████╗  ██║██╔════╝ ██╔════╝
+echo                              ██████╔╝█████╗  ██║   ██║█████╗  ██╔██╗ ██║██║  ███╗█████╗  
+echo                              ██╔══██╗██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║██║   ██║██╔══╝  
+echo                              ██║  ██║███████╗ ╚████╔╝ ███████╗██║ ╚████║╚██████╔╝███████╗
+echo                              ╚═╝  ╚═╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝   
 echo.                                                                             
 echo.
 ping localhost -n 5 >nul
