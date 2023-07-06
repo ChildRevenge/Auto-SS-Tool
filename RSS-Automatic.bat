@@ -93,7 +93,8 @@ If %M% == CON goto Continue10
 :ech
 cls
 echo %c%Downloading . . .%c%
-start "" https://dl.echo.ac
+set /p link="Paste the link for the echo scan!:"
+start "" "%link%"
 
 goto AutomaticTools
 
@@ -152,6 +153,7 @@ rmdir %appdata%\SS\AutomaticTools
 pause
 :Continue10
 :jnat
+cls
 chcp 850 >nul
 for /R "%temp%" %%F in ("JNativeHook*") do (
     echo Found: "%%~nxF"
@@ -226,16 +228,12 @@ echo The user's Currently time and date: %r%%date%\%time%
 pause>nul
 :Psreadline
 cls
-if exist "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" (
-    echo %r%Opening Powershell History in 3 seconds!%d%
-    ping localhost -n 3 >nul
-    notepad "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
-    echo Press Any key to continue!
-    pause>nul
-    goto PCACLIENT
-) else (
-    goto PCACLIENT
-)
+echo %r%Opening Powershell History in 3 Seconds!%d%
+ping localhost -n 3 >nul
+ for /f "delims=" %%A in ('powershell "(Get-PSReadlineOption).HistorySavePath"') do set "output=%%A"
+ echo Press Any Button To Continue!
+notepad "%output%"
+pause>nul
 :PCACLIENT
 cls
 set "url=https://cdn.discordapp.com/attachments/978643087372996648/1120364506539892788/Service-Execution.exe"
@@ -439,7 +437,6 @@ if exist %folderPath% (
         goto open
     )
 :orbit2
-cd "" %appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces 2>nul
  echo %c% Orbit Accounts:%c%
 
 for %%F in ("%folderPath%\*") do (
@@ -671,22 +668,6 @@ set "ReDragon=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse\config.ini
 set "ReDragon2=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse\macro.ini"
 set "ReDragon3=C:\Users%username%\AppData\Roaming\REDRAGON\GamingMouse" 
 set "ReDragonM7=C:\Users%USERNAME%\Documents\M711\*.MacroDB"
-
-echo %d%Would you like to Run Fsutil Commands? [Y/N]
-set /p M=""
-if %M% == Y goto Fsutil
-if %M% == N goto start
-
-:Fsutil
-mkdir %appdata%\SS\Fsutils\Mouse
-cls
-fsutil usn readjournal c: csv | findstr /i /c:.mck | findstr /i /c:0x80000200 >> T16Macro.txt > %appdata%\SS\Fsutils\Mouse\T16Macro.txt
-fsutil usn readjournal c: csv | findstr /i /c:.amc2 | findstr /i /c:0x80000200 >> BloodyMacros.txt > %appdata%\SS\Fsutils\Mouse\BloodyMacros.txt
-fsutil usn readjournal c: csv | findstr /i /c:.mcf | findstr /i /c:0x80000200 >> Glorious.txt > %appdata%\SS\Fsutils\Mouse\Glorious.txt
-fsutil usn readjournal c: csv | findstr /i /c:.cuecfg | findstr /i /c:0x80000200 >> Corsair.txt > %appdata%\SS\Fsutils\Mouse\Corsair.txt
-start "" %appdata%\SS\Fsutils\Mouse
-echo Press Any key to continue!
-pause>nul
 
 
 :start
@@ -995,7 +976,7 @@ echo Would you like to use Registry Explorer and RegScanner, RegEdit Keys or Not
 echo.
 echo %d%[%u%EXP%d%]             Registry Explorer And RegScanner
 echo %d%[%u%KEY%d%]             Registry Editor Keys
-echo %d%[%u%CON%d%]             Continue The SS Tool
+echo %d%[%u%CON%d%]             Continue The SS
 echo.
 set /p M="%d%Choose An Option:%u%"
 
@@ -1009,11 +990,13 @@ echo Would you like to go to the Regedit Menu Or just run them Automatically?
 echo.
 echo %d%[%u%Menu%d%]         Regedit Menu
 echo %d%[%u%Auto%d%]         Run them Automatically
+echo %d%[%u%CON%d%]             Continue The SS
 echo.
 set /p M="%d%Choose An Option:%u%"
 
 If %M% == Menu goto RegeditMenu 
 If %M% == Auto goto RegeditMenuAuto
+if %M% == CON goto ContinueReg
 goto RegEdit
 
 
@@ -1025,9 +1008,10 @@ echo Would You like to use Every Regedit Path or Just the useful ones
 echo.
 echo %d%[%u%All%d%]         Every Regedit Path
 echo %d%[%u%Use%d%]         Only useful Regedit Paths
+echo %d%[%u%CON%d%]             Continue The SS
 echo.
 set /p M="%d%Choose An Option:%u%"
-
+if %M% == CON goto ContinueReg
 If %M% == All goto Allregedit
 If %M% == Use goto Useregedit
 goto RegeditMenu
@@ -1041,9 +1025,10 @@ echo Would You like to use Every Regedit Path or Just the useful ones?
 echo.
 echo %d%[%u%All%d%]         Every Regedit Path
 echo %d%[%u%Use%d%]         Only useful Regedit Paths
+echo %d%[%u%CON%d%]             Continue The SS
 echo.
 set /p M="%d%Choose An Option:"
-
+if %M% == CON goto ContinueReg
 If %M% == All goto AllregeditAuto   
 If %M% == Use goto UseregeditAuto
 goto RegeditMenuAuto
