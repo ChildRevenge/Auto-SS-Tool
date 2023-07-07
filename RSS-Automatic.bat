@@ -67,7 +67,7 @@ goto AT
 
 :AutomaticTools
 cls
-mkdir %appdata%\SS\AutomaticTools
+mkdir %appdata%\SS\AutomaticTools 2>nul
 echo     %bo%%red%%c%Automatic Tools%red%%bo%
 echo %d%[%u%Ec%d%]         Download Echo
 echo %d%[%u%Ocean%d%]      Download Ocean
@@ -92,7 +92,7 @@ If %M% == CON goto Continue10
 
 :ech
 cls
-echo %c%Downloading . . .%c%
+echo %d%
 set /p link="Paste the link for the echo scan!:"
 start "" "%link%"
 
@@ -146,12 +146,11 @@ if %M% == Y start "" https://ssdetector.xyz else goto AutomaticTools
 goto AutomaticTools
 
 :delete1
-
+:Continue10
 del %appdata%\SS\AutomaticTools
 rmdir %appdata%\SS\AutomaticTools
 %c%<!> The "AutomaticTools" file Has been deleted!<!>%c%
-pause
-:Continue10
+
 :jnat
 cls
 chcp 850 >nul
@@ -359,6 +358,7 @@ for %%p in (%processes%) do (
 endlocal
 :vpn
 :checkvpns
+cls
 setlocal enabledelayedexpansion
 set "processes=pia-client ProtonVPNService IpVanish WindScribe ExpressVPN NordVPN CyberGhost pia-tray SurfShark VyprVPN HSSCP TunnelBear ProtonVPN"
 for %%p in (%processes%) do (
@@ -374,7 +374,13 @@ for %%p in (%processes%) do (
         if "%M%" == "2" goto end
     )
 )
-
+:vpn2
+cls 
+powershell -command "$ip = (Invoke-WebRequest ifconfig.me/ip -UseBasicParsing).Content; (Invoke-WebRequest \"https://proxycheck.io/v2/$ip\?vpn=1^&asn=1\" -UseBasicParsing).Content >> $env:temp\proxy.json;(Get-Content $env:temp\proxy.json) -match 'proxy'"
+del /f %temp%\proxy.json 2>nul
+echo %d%If Proxy says yes, The user is on a Vpn or a proxy.
+echo %r%Press Any Key To Continue!%d%
+pause>nul
 ::Accounts
 :vanilaaccounts
 del %appdata%\SS\Alts.txt 2>nul
@@ -431,7 +437,7 @@ goto orbit
 
 :orbit
 set "folderPath=%appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces"
-if exist %folderPath% (
+if exist "%folderPath%" (
     goto orbit2
     ) else (
         goto open
