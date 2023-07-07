@@ -53,7 +53,7 @@ echo                              ╚═╝  ╚═╝╚══════╝  
 echo.                                                                                                                                                                                                                                                                                                               
 tasklist /fi "ImageName eq Javaw.exe" /fo csv 2>nul | find /I "Javaw" >nul
 if "%ERRORLEVEL%"=="0" echo                                                   %g%Minecraft found.%white%
-if "%ERRORLEVEL%"=="1" echo                                                   %r%Minecraft not found.%white%
+if "%ERRORLEVEL%"=="1" echo                                                   %r%Minecraft not found.%g%
 ping localhost -n 3 >nul
 cls
 :AT
@@ -298,7 +298,7 @@ findstr /i /c:"0x00080000" "%Fsutil%" | findstr /i /c:"0x00000005" >> %appdata%\
 findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\JAR\RenamedJars.txt
 findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\JAR\DeletedJars.txt
 findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x00000020" >> %appdata%\SS\Fsutils\JAR\AllJars.txt
-findstr /i /C:"0x00000004" "%Fsutil%" /i /C:"0x00000102" | findstr /i /C:"jar_cache" /i /C:".timestamp" >> %appdata%\SS\Fsutils\JAR\JarCache.txt
+findstr /i /C:"0x00000004" "%Fsutil%" | findstr /i /C:"0x00000102" | findstr /i /C:"jar_cache" | findstr /i /C:".timestamp" >> %appdata%\SS\Fsutils\JAR\JarCache.txt
 findstr /i /c:"Data Truncation" "%Fsutil%" | findstr /i /c:".jar" >> %appdata%\SS\Fsutils\JAR\JarDataTruncation.txt
 findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\PFs\RenamedPF.txt
 findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\PFs\DeletedPF.txt
@@ -312,15 +312,18 @@ findstr /i /c:".zip" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsu
 findstr /i /c:".7z" "%Fsutil%" | findstr /i /c:"0x80000200" >>  %appdata%\SS\Fsutils\Archives\Deleted7z.txt
 findstr /i /c:".tar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Archives\DeletedTar.txt
 findstr /i /c:".gz" "%Fsutil%" | findstr /i /c:"0x80000200" >>  %appdata%\SS\Fsutils\Archives\DeletedGz.txt
-explorer "" %appdata%\SS\Fsutils
+start "" %appdata%\SS\Fsutils
 cls
 echo Finished! Press Any Button To Continue
 pause>nul
 :eventlog
+set "output=%appdata%\SS\EventLog"
+if exist "%output%" (
+    rd /s /q "%output%"
+)
 mkdir %appdata%\SS\EventLog 2>nul
 cls
 echo Scanning EventLog. . .
-set "output=%appdata%\SS\EventLog"
 wevtutil qe Application /q:"*[System/EventID=3079]" /f:text /c:1 /rd:true /e:root >> JournalDeletion.txt > %output%\JournalDeletion.txt
 wevtutil qe Security /q:"*[System/EventID=1102]" /f:text /c:1 /rd:true /e:root >> EvLogCleared.txt > %output%\EvLogCleared.txt
 wevtutil qe Security /q:"*[System/EventID=1100]" /f:text /c:1 /rd:true /e:root >> EvLogStopped.txt > %output%\EvLogStopped.txt
@@ -378,6 +381,7 @@ for %%p in (%processes%) do (
 )
 :vpn2
 cls 
+echo %d%Looking for proxies. . . 
 powershell -command "$ip = (Invoke-WebRequest ifconfig.me/ip -UseBasicParsing).Content; (Invoke-WebRequest \"https://proxycheck.io/v2/$ip\?vpn=1^&asn=1\" -UseBasicParsing).Content >> $env:temp\proxy.json;(Get-Content $env:temp\proxy.json) -match 'proxy'"
 del /f %temp%\proxy.json 2>nul
 echo %d%If Proxy says yes, The user is on a Vpn or a proxy.
@@ -387,7 +391,7 @@ pause>nul
 :vanilaaccounts
 del %appdata%\SS\Alts.txt 2>nul
 cls
-echo %c%========== Accounts: ==========%d% > Alts.txt >> %appdata%\SS\Alts.txt
+echo ========== Accounts: ========== > Alts.txt >> %appdata%\SS\Alts.txt
 set search_string="name"
 set file_path=%appdata%\.minecraft\usercache.json
 if exist %file_path% (
@@ -431,27 +435,27 @@ goto tl
 set search_string="displayName"
 set file_path2=%appdata%\.minecraft\TlauncherProfiles.json
 if exist %file_path2% (
-findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
+findstr /C:%Search_string% %file_path2% > Alts.txt >> %appdata%\SS\Alts.txt
 goto orbit
 ) else (
     goto orbit
 )
-
+pause
 :orbit
-set "folderPath=%appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces"
-if exist "%folderPath%" (
+set "folderPathOrbit=%appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces"
+if exist "%folderPathOrbit%" (
     goto orbit2
     ) else (
-        goto open
+        goto modfolder
     )
 :orbit2
- echo %c% Orbit Accounts:%c%
-
-for %%F in ("%folderPath%\*") do (
-    echo %%~nxF > Alts.txt >> %appdata%\SS\Alts.txt
+for %%F in ("%folderPathOrbit%\*") do (
+    echo %%~nxF > Alts.txt >> %appdata%\SS\Alts.txt 
+    notepad %appdata%\SS\Alts.txt
+    goto modfolder
 )
 
-    
+                    
 :open
 notepad %appdata%\SS\Alts.txt
 echo %d%Press any button to Continue!
@@ -469,8 +473,8 @@ for %%F in ("%folderPath%\*") do (
 )
 :orbitmodfolder
 set "folderpath2=%appdata%\Orbit-Launcher\launcher-minecraft\mods"
-if exist %folderPath2% ( 
-    for %%F in ("%foldePath%\*") do (
+if exist "%appdata%\Orbit-Launcher\launcher-minecraft\mods" ( 
+    for %%F in ("%appdata%\Orbit-Launcher\launcher-minecraft\mods\*") do (
         echo %%~nxF
     )
 )
