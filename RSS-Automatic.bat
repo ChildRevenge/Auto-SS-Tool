@@ -298,6 +298,7 @@ findstr /i /c:"0x00080000" "%Fsutil%" | findstr /i /c:"0x00000005" >> %appdata%\
 findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\JAR\RenamedJars.txt
 findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\JAR\DeletedJars.txt
 findstr /i /c:".jar" "%Fsutil%" | findstr /i /c:"0x00000020" >> %appdata%\SS\Fsutils\JAR\AllJars.txt
+findstr /i /C:"0x00000004" "%Fsutil%" /i /C:"0x00000102" | findstr /i /C:"jar_cache" /i /C:".timestamp" >> %appdata%\SS\Fsutils\JAR\JarCache.txt
 findstr /i /c:"Data Truncation" "%Fsutil%" | findstr /i /c:".jar" >> %appdata%\SS\Fsutils\JAR\JarDataTruncation.txt
 findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x00001000" >> %appdata%\SS\Fsutils\PFs\RenamedPF.txt
 findstr /i /c:".pf" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\PFs\DeletedPF.txt
@@ -311,6 +312,7 @@ findstr /i /c:".zip" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsu
 findstr /i /c:".7z" "%Fsutil%" | findstr /i /c:"0x80000200" >>  %appdata%\SS\Fsutils\Archives\Deleted7z.txt
 findstr /i /c:".tar" "%Fsutil%" | findstr /i /c:"0x80000200" >> %appdata%\SS\Fsutils\Archives\DeletedTar.txt
 findstr /i /c:".gz" "%Fsutil%" | findstr /i /c:"0x80000200" >>  %appdata%\SS\Fsutils\Archives\DeletedGz.txt
+explorer "" %appdata%\SS\Fsutils
 cls
 echo Finished! Press Any Button To Continue
 pause>nul
@@ -459,42 +461,18 @@ pause>nul
 :modfolder
 cls
 set "folderPath=%appdata%\.minecraft\mods"
-cd "%appdata%\.minecraft\mods" 2>nul
-if %errorlevel% equ 0 (
-    goto modfolder2
-    )
-    if %errorlevel% neq 0 (
-        goto orbitmodfolder
-    )
-
-:modfolder2
- echo %c%Mods Folder!%c%
- echo. %r%
+if exist %folderPath% (
+ echo %d%Mods Folder!%r%
 for %%F in ("%folderPath%\*") do (
     echo %%~nxF
+)
 )
 :orbitmodfolder
-set "folderpath=%appdata%\Orbit-Launcher\launcher-minecraft\mods"
-cd %folderpath%
-if %errorlevel% equ 0 (
-    goto orbitmodfolder2
-)
-if %errorlevel% neq 0 (
-    echo Press Any Key To Go To The Menu!
-    pause>nul
-    goto luyten2
-)
-
-
-:orbitmodfolder2
-echo.
-echo.
-echo.
-echo.
- echo %d%Orbit Mods Folder!%d%
- echo. %r%
-for %%F in ("%folderPath%\*") do (
-    echo %%~nxF
+set "folderpath2=%appdata%\Orbit-Launcher\launcher-minecraft\mods"
+if exist %folderPath2% ( 
+    for %%F in ("%foldePath%\*") do (
+        echo %%~nxF
+    )
 )
 echo.
 echo.
@@ -507,12 +485,17 @@ goto luyten2
 :luyten3
 cls
 echo %d% Downloading Luyten!
-mkdir %appdata%\SS\ManualTools 2>nul
-start "" %appdata%\Orbit-Launcher\launcher-minecraft\mods
+mkdir %appdata%\SS 2>nul
+if exist %appdata%\Orbit-Launcher\launcher-minecraft\mods (
+explorer %appdata%\Orbit-Launcher\launcher-minecraft\mods
+)
+if exist %appdata%\.minecraft\mods (
 start "" %appdata%\.minecraft\mods
-powershell (new-object System.Net.WebClient).DownloadFile('https://github.com/deathmarine/Luyten/releases/download/v0.5.4_Rebuilt_with_Latest_depenencies/luyten-0.5.4.exe','%appdata%\SS\ManualTools\Luyten.exe')
-"%appdata%\SS\ManualTools\Luyten.exe"
-pause>nul
+)
+set Luyten="https://cdn.discordapp.com/attachments/1126609035119055049/1126895462801211468/luyten-0.5.4.exe"
+set output="%appdata%\SS\luyten-0.5.4.exe"
+curl -o "%output%" "%Luyten%"
+start "" %output%
 
 :ACQ
 cls
@@ -526,11 +509,9 @@ goto ACQ
 :activiescache
 cls
 setlocal enabledelayedexpansion
-
 set "targetFile=ActivitiesCache.db"
 set "targetFolder=C:\Users\%USERNAME%\AppData\Local\ConnectedDevicesPlatform"
 
-REM Count the number of target files found
 set "count=0"
 for /r "%targetFolder%" %%F in ("%targetFile%") do (
     set /a "count+=1"
