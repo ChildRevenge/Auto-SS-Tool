@@ -281,6 +281,7 @@ mkdir %appdata%\SS\Fsutils\BAT 2>nul
 mkdir %appdata%\SS\Fsutils\CrashDump 2>nul
 mkdir %appdata%\SS\Fsutils\Archives 2>nul
 mkdir %appdata%\SS\Fsutils 2>nul
+echo %d%Running Fsutil Commands. . .
 fsutil usn readjournal c: csv >> %appdata%\SS\Fsutils\FsutilJournal.txt
 set Fsutil="%appdata%\SS\Fsutils\FsutilJournal.txt"
 findstr /i /c:".exe" "%Fsutil%" | findstr /i /c:"0x80000200" >> "%appdata%\SS\Fsutils\EXE\DeletedExes.txt"
@@ -501,12 +502,19 @@ set output="%appdata%\SS\luyten-0.5.4.exe"
 curl -o "%output%" "%Luyten%"
 start "" %output%
 
+
+
+
+
+
+
+
 :ACQ
 cls
 echo Would You like to do ActiviesCache? [Y/N]
 set /p "M="
 if %M% == Y goto activiescache
-if %M% == N goto cd
+if %M% == N goto AmCacheQ
 goto ACQ
 
 
@@ -553,6 +561,10 @@ for /r "%targetFolder%" %%F in ("%targetFile%") do (
 :BreakLoop
 :eof
 
+
+
+
+
 mkdir %appdata%\SS\Automatic 
 cls
 set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/WxTCmd.zip"
@@ -598,7 +610,74 @@ set "timelineExePath=%appdata%\SS\Automatic\TimelineExplorer\TimelineExplorer.ex
 start "" "%timelineExePath%" "%activityop%"
 echo Press any key to continue!
 pause>nul
+rd /s /q "%appdata%\SS\Automatic" 2>nul
 endlocal
+
+
+
+:AmCacheQ
+cls
+echo Would You like to do AmCache? [Y/N]
+set /p "M="
+if %M% == Y goto AmCache
+if %M% == N goto CD
+goto AmCacheQ
+
+
+
+:AmCache
+cls
+mkdir %appdata%\SS\Automatic 2>nul
+cls
+set "url=https://cdn.discordapp.com/attachments/1128791979568934912/1129506271876370442/AmcacheParser.exe"
+set "output=%appdata%\SS\Automatic\AmcacheParser.exe"
+curl -o "%output%" "%url%" 
+cls
+ping localhost -n 3 >nul
+setlocal enabledelayedexpansion
+mkdir %appdata%\SS\Automatic\AmCache 2>nul
+cd %appdata%\SS\Automatic
+echo %d%Running AmCacheCommand. . .
+AmcacheParser.exe -f "C:\Windows\appcompat\Programs\Amcache.hve" --csv "%appdata%\SS\Automatic\AmCache"
+cls
+cd %appdata%\SS\Automatic\AmCache
+del *_*_ShortCuts.csv
+del *_*_DriverPackages.csv
+del *_*_DriveBinaries.csv
+del *_*_DevicePnps.csv
+del *_*_DeviceContainers.csv
+set folderPath="%appdata%\SS\Automatic\AmCache"
+set "activityop="
+set "count=0"
+for %%F in ("%folderPath%\*") do (
+    set /a count+=1
+    set "activityop=%%F"
+)
+
+
+cls
+mkdir %appdata%\SS\Automatic\Timelineexplorer 2>nul
+set "url=https://f001.backblazeb2.com/file/EricZimmermanTools/net6/TimelineExplorer.zip"
+set "output=%appdata%\SS\Automatic\TimelineExplorer.zip"
+set "zipFile=%appdata%\SS\Automatic\TimelineExplorer.zip"
+set "extractDir=%appdata%\SS\Automatic\"
+curl -o "%output%" "%url%"
+ping localhost -n 3 >nul
+powershell -Command "Expand-Archive -Path '%zipFile%' -DestinationPath '%extractDir%' -Force"
+cls
+
+set "timelineExePath=%appdata%\SS\Automatic\TimelineExplorer\TimelineExplorer.exe"
+start "" "%timelineExePath%" "%activityop%"
+echo Press any key to continue!
+rd /s /q "%appdata%\SS\Automatic" 2>nul
+
+
+
+
+
+
+
+
 :CD
 cls
 if exist  "C:\Users\%username%\AppData\Local\CrashDumps" (
